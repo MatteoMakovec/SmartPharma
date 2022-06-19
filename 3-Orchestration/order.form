@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Prescription",
+      "type": "textfield",
+      "id": "Field_1d86d0b",
+      "key": "prescription"
+    }
+  ],
+  "type": "default",
+  "id": "order"
+}

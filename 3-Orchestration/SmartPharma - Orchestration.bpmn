@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:signavio="http://www.signavio.com" id="sid-575f48f0-34f3-4231-a1e3-48567a39c6d4" targetNamespace="http://www.signavio.com" expressionLanguage="http://www.w3.org/TR/XPath" exporter="Camunda Modeler" exporterVersion="4.12.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+  <process id="SmartPharma" name="SmartPharma" processType="None" isClosed="false" isExecutable="true">
+    <extensionElements>
+      <signavio:signavioDiagramMetaData metaKey="prozessreifegrad" metaValue="" />
+      <signavio:signavioDiagramMetaData metaKey="iso9000ff" metaValue="" />
+      <signavio:signavioDiagramMetaData metaKey="processgoal" metaValue="" />
+      <signavio:signavioDiagramMetaData metaKey="meta-processowner" metaValue="" />
+      <signavio:signavioDiagramMetaData metaKey="revisionid" metaValue="758145cf62db4e46a6b1dd7f44316bf9" />
+    </extensionElements>
+    <sequenceFlow id="Flow_0guhwbe" sourceRef="assign-delivery" targetRef="Activity_0241sqj" />
+    <sequenceFlow id="Flow_1rxcyl5" sourceRef="delivery-status" targetRef="Event_1cwtkxd" />
+    <endEvent id="Event_1cwtkxd">
+      <incoming>Flow_1rxcyl5</incoming>
+    </endEvent>
+    <sendTask id="assign-delivery" name="Assign Delivery man" camunda:type="external" camunda:topic="assign-delivery">
+      <incoming>Flow_18g47bg</incoming>
+      <outgoing>Flow_0guhwbe</outgoing>
+    </sendTask>
+    <manualTask id="Activity_0241sqj" name="Delivery process">
+      <incoming>Flow_0guhwbe</incoming>
+      <outgoing>Flow_0k0bxq6</outgoing>
+    </manualTask>
+    <sequenceFlow id="Flow_0k0bxq6" sourceRef="Activity_0241sqj" targetRef="delivery-status" />
+    <userTask id="delivery-status" name="Delivery final status" camunda:candidateGroups="delivery">
+      <incoming>Flow_0k0bxq6</incoming>
+      <outgoing>Flow_1rxcyl5</outgoing>
+    </userTask>
+    <startEvent id="new_order" name="New order received" camunda:formRef="order" camunda:formRefBinding="latest">
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="prescription" label="Prescription" type="string" />
+        </camunda:formData>
+      </extensionElements>
+      <outgoing>Flow_1iavjiq</outgoing>
+      <messageEventDefinition id="MessageEventDefinition_0vfpsd7" messageRef="Message_1p6exn1" />
+    </startEvent>
+    <serviceTask id="control-medicine" name="Control type of medicine" implementation="##WebService" camunda:type="external" camunda:topic="control-medicine">
+      <incoming>Flow_1iavjiq</incoming>
+      <outgoing>sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE</outgoing>
+    </serviceTask>
+    <exclusiveGateway id="sid-6AEA69D5-7B27-470C-9DD9-F8366CAE7CCB" name="" gatewayDirection="Converging">
+      <incoming>sid-F21BC459-2F77-40BE-8892-2ED015D274CD</incoming>
+      <incoming>Flow_1ee9esq</incoming>
+      <outgoing>Flow_18g47bg</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway id="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679" name="" gatewayDirection="Converging">
+      <incoming>sid-13DD052F-9C3C-4F59-AE01-28092D95AB02</incoming>
+      <incoming>Flow_13a7qan</incoming>
+      <outgoing>sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway id="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" name="" gatewayDirection="Diverging">
+      <incoming>sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE</incoming>
+      <outgoing>sid-13DD052F-9C3C-4F59-AE01-28092D95AB02</outgoing>
+      <outgoing>sid-9F168CE7-3772-4255-8C9B-C5735EB3099C</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway id="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" name="" gatewayDirection="Diverging">
+      <incoming>sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9</incoming>
+      <outgoing>sid-73239616-55AD-43CD-9B6C-25EEC151071D</outgoing>
+      <outgoing>Flow_1cw1a9a</outgoing>
+    </exclusiveGateway>
+    <serviceTask id="validate-payment" name="Validate payment result" implementation="##WebService" camunda:type="external" camunda:topic="validate-payment">
+      <incoming>sid-FA4826D6-9275-4733-8736-07F7DFF7359A</incoming>
+      <outgoing>sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9</outgoing>
+    </serviceTask>
+    <sendTask id="report-notification" name="Report notification" implementation="##WebService" camunda:type="external" camunda:topic="report-notification">
+      <incoming>sid-C6A5144D-90C5-4AF3-98B7-F702AE85A25A</incoming>
+      <outgoing>sid-F21BC459-2F77-40BE-8892-2ED015D274CD</outgoing>
+    </sendTask>
+    <sendTask id="payment-delegation" name="Payment delegation" implementation="##WebService" camunda:type="external" camunda:topic="payment-delegation">
+      <incoming>sid-E3140F63-9D17-437D-A1DA-CF5EEE763502</incoming>
+      <outgoing>sid-FA4826D6-9275-4733-8736-07F7DFF7359A</outgoing>
+    </sendTask>
+    <serviceTask id="check-stock" name="Check stock availability" implementation="##WebService" camunda:type="external" camunda:topic="check-stock">
+      <incoming>sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1</incoming>
+      <outgoing>sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5</outgoing>
+    </serviceTask>
+    <serviceTask id="user-information" name="Retrieve User Information" camunda:type="external" camunda:topic="user-information">
+      <incoming>sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA</incoming>
+      <outgoing>sid-C692AC66-77FE-4415-A788-051331206572</outgoing>
+    </serviceTask>
+    <dataObjectReference id="sid-CA724742-8F09-407E-8BC5-E8B10B9565C8_2" name="Medical &#10;Prescription" dataObjectRef="DataObject_1y7wm1p" />
+    <dataObject id="DataObject_1y7wm1p" />
+    <dataObjectReference id="sid-86E01E7B-8EB7-4F56-BB80-AE41BEBD95FB_2" name="Map information" dataObjectRef="DataObject_05nrqmh" />
+    <dataObject id="DataObject_05nrqmh" />
+    <serviceTask id="check-address" name="Check Delivery address" implementation="##WebService" camunda:type="external" camunda:topic="check-address">
+      <incoming>sid-9C77C21E-C875-41F3-BE06-DA66FEA2486F</incoming>
+      <outgoing>sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3</outgoing>
+      <ioSpecification>
+        <dataOutput />
+        <inputSet name="DefaultInputSet" />
+        <outputSet name="DefaultOutputSet" />
+      </ioSpecification>
+      <dataOutputAssociation id="sid-0B5B6789-4E5B-4FFA-893A-D4C5988551F8">
+        <targetRef>sid-86E01E7B-8EB7-4F56-BB80-AE41BEBD95FB_2</targetRef>
+      </dataOutputAssociation>
+    </serviceTask>
+    <dataObjectReference id="sid-3367D435-52F1-473B-AC75-D91256B4A065_2" name="Delivery address" dataObjectRef="DataObject_04k4n9c" />
+    <dataObject id="DataObject_04k4n9c" />
+    <serviceTask id="validate-information" name="Validate Information" implementation="##WebService" camunda:type="external" camunda:topic="validate-information">
+      <incoming>sid-C692AC66-77FE-4415-A788-051331206572</incoming>
+      <outgoing>sid-972DBAAC-B32F-4982-B650-FFE85AD657A0</outgoing>
+      <ioSpecification>
+        <dataOutput />
+        <inputSet name="DefaultInputSet" />
+        <outputSet name="DefaultOutputSet" />
+      </ioSpecification>
+    </serviceTask>
+    <serviceTask id="report-creation" name="Report creation" implementation="##WebService" camunda:type="external" camunda:topic="report-creation">
+      <incoming>sid-73239616-55AD-43CD-9B6C-25EEC151071D</incoming>
+      <incoming>sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684</incoming>
+      <incoming>sid-58109D60-EABC-41D4-953C-1C7A8BC0D851</incoming>
+      <incoming>Flow_1m39xao</incoming>
+      <outgoing>sid-C6A5144D-90C5-4AF3-98B7-F702AE85A25A</outgoing>
+    </serviceTask>
+    <exclusiveGateway id="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" name="" gatewayDirection="Diverging">
+      <incoming>sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5</incoming>
+      <outgoing>sid-E3140F63-9D17-437D-A1DA-CF5EEE763502</outgoing>
+      <outgoing>sid-58109D60-EABC-41D4-953C-1C7A8BC0D851</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway id="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" name="" gatewayDirection="Diverging">
+      <incoming>sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D</incoming>
+      <outgoing>sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1</outgoing>
+      <outgoing>sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684</outgoing>
+    </exclusiveGateway>
+    <parallelGateway id="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" name="" gatewayDirection="Converging">
+      <incoming>sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3</incoming>
+      <incoming>sid-972DBAAC-B32F-4982-B650-FFE85AD657A0</incoming>
+      <outgoing>sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D</outgoing>
+    </parallelGateway>
+    <sendTask id="ministry-health" name="Contact Ministry of Health" implementation="##WebService" camunda:type="external" camunda:topic="ministry-health">
+      <incoming>sid-9F168CE7-3772-4255-8C9B-C5735EB3099C</incoming>
+      <outgoing>sid-B7E314E1-695A-4F13-8B23-CA438A3F2CAA</outgoing>
+      <ioSpecification>
+        <dataOutput />
+        <inputSet name="DefaultInputSet" />
+        <outputSet name="DefaultOutputSet" />
+      </ioSpecification>
+      <dataOutputAssociation id="sid-587323F6-0FC7-43C1-A995-2B979E159459">
+        <targetRef>sid-CA724742-8F09-407E-8BC5-E8B10B9565C8_2</targetRef>
+      </dataOutputAssociation>
+    </sendTask>
+    <serviceTask id="google-api" name="Contact Google Maps API" implementation="##WebService" camunda:type="external" camunda:topic="google-api">
+      <incoming>sid-5679AFAA-B587-43E3-830B-5EECAF255ABB</incoming>
+      <outgoing>sid-9C77C21E-C875-41F3-BE06-DA66FEA2486F</outgoing>
+      <ioSpecification>
+        <dataOutput />
+        <inputSet name="DefaultInputSet" />
+        <outputSet name="DefaultOutputSet" />
+      </ioSpecification>
+      <dataOutputAssociation id="sid-60236C75-46D3-49DB-8F91-F71B5E5F317B">
+        <targetRef>sid-3367D435-52F1-473B-AC75-D91256B4A065_2</targetRef>
+      </dataOutputAssociation>
+    </serviceTask>
+    <parallelGateway id="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" name="" gatewayDirection="Diverging">
+      <incoming>sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9</incoming>
+      <outgoing>sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA</outgoing>
+      <outgoing>sid-5679AFAA-B587-43E3-830B-5EECAF255ABB</outgoing>
+    </parallelGateway>
+    <sequenceFlow id="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE" name="" sourceRef="control-medicine" targetRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" />
+    <sequenceFlow id="sid-F21BC459-2F77-40BE-8892-2ED015D274CD" name="" sourceRef="report-notification" targetRef="sid-6AEA69D5-7B27-470C-9DD9-F8366CAE7CCB" />
+    <sequenceFlow id="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02" name="prescription not required" sourceRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" targetRef="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679">
+      <conditionExpression xsi:type="tFormalExpression">${prescription_required.equals("false")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9" name="" sourceRef="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679" targetRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" />
+    <sequenceFlow id="sid-9F168CE7-3772-4255-8C9B-C5735EB3099C" name="prescription required" sourceRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" targetRef="ministry-health">
+      <conditionExpression xsi:type="tFormalExpression">${prescription_required.equals("true")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9" name="" sourceRef="validate-payment" targetRef="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" />
+    <sequenceFlow id="sid-73239616-55AD-43CD-9B6C-25EEC151071D" name="payment rejected" sourceRef="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" targetRef="report-creation">
+      <conditionExpression xsi:type="tFormalExpression">${payment_confirmation.equals("false")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-FA4826D6-9275-4733-8736-07F7DFF7359A" name="" sourceRef="payment-delegation" targetRef="validate-payment" />
+    <sequenceFlow id="sid-C6A5144D-90C5-4AF3-98B7-F702AE85A25A" name="" sourceRef="report-creation" targetRef="report-notification" />
+    <sequenceFlow id="sid-E3140F63-9D17-437D-A1DA-CF5EEE763502" name="medicine available" sourceRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" targetRef="payment-delegation">
+      <conditionExpression xsi:type="tFormalExpression">${stock_available.equals("true")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1" name="order information is valid" sourceRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" targetRef="check-stock">
+      <conditionExpression xsi:type="tFormalExpression">${order_info_valid.equals("true")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5" name="" sourceRef="check-stock" targetRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" />
+    <sequenceFlow id="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA" name="" sourceRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" targetRef="user-information" />
+    <sequenceFlow id="sid-C692AC66-77FE-4415-A788-051331206572" name="" sourceRef="user-information" targetRef="validate-information" />
+    <sequenceFlow id="sid-9C77C21E-C875-41F3-BE06-DA66FEA2486F" name="" sourceRef="google-api" targetRef="check-address" />
+    <sequenceFlow id="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3" name="" sourceRef="check-address" targetRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" />
+    <sequenceFlow id="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0" name="" sourceRef="validate-information" targetRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" />
+    <sequenceFlow id="sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684" name="order information not valid" sourceRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" targetRef="report-creation">
+      <conditionExpression xsi:type="tFormalExpression">${order_info_valid.equals("true")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-58109D60-EABC-41D4-953C-1C7A8BC0D851" name="medicine not available" sourceRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" targetRef="report-creation">
+      <conditionExpression xsi:type="tFormalExpression">${stock_available.equals("false")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D" name="" sourceRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" targetRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" />
+    <sequenceFlow id="sid-5679AFAA-B587-43E3-830B-5EECAF255ABB" name="" sourceRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" targetRef="google-api" />
+    <sequenceFlow id="Flow_1iavjiq" sourceRef="new_order" targetRef="control-medicine" />
+    <sequenceFlow id="Flow_18g47bg" sourceRef="sid-6AEA69D5-7B27-470C-9DD9-F8366CAE7CCB" targetRef="assign-delivery" />
+    <serviceTask id="look-for-delivery" name="Look for available Delivery men" camunda:type="external" camunda:topic="look-for-delivery">
+      <incoming>Flow_1cw1a9a</incoming>
+      <outgoing>Flow_0g62f3h</outgoing>
+    </serviceTask>
+    <dataObjectReference id="sid-CCC1A31C-815A-40AF-982A-589CF77D0661_2" name="Delivery man information" dataObjectRef="DataObject_1ggzody" />
+    <dataObject id="DataObject_1ggzody" />
+    <dataObjectReference id="sid-6D5C13FC-E394-4A2A-916C-BE8D5C32967A_2" name="Map&#10; information" dataObjectRef="DataObject_06857zk" />
+    <dataObject id="DataObject_06857zk" />
+    <serviceTask id="delivery-information" name="Retrieve Delivery man information " camunda:type="external" camunda:topic="delivery-information">
+      <incoming>Flow_0g62f3h</incoming>
+      <outgoing>sid-EFF2F60C-1C7F-4D2A-8F6E-F361DA4F7EB7</outgoing>
+    </serviceTask>
+    <serviceTask id="compute-time" name="Compute Delivery time" implementation="##WebService" camunda:type="external" camunda:topic="compute-time">
+      <incoming>sid-EFF2F60C-1C7F-4D2A-8F6E-F361DA4F7EB7</incoming>
+      <outgoing>Flow_1ee9esq</outgoing>
+      <ioSpecification>
+        <dataOutput />
+        <dataOutput />
+        <dataOutput />
+        <inputSet name="DefaultInputSet" />
+        <outputSet name="DefaultOutputSet" />
+      </ioSpecification>
+      <dataOutputAssociation id="sid-4D3C8346-81E0-4A36-B373-11C11E76A744">
+        <targetRef>sid-CCC1A31C-815A-40AF-982A-589CF77D0661_2</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation id="sid-9301DF09-5AED-4401-834E-E631C1A2A35D">
+        <targetRef>sid-6D5C13FC-E394-4A2A-916C-BE8D5C32967A_2</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation id="DataOutputAssociation_0pwq8i6">
+        <targetRef>DataObjectReference_0sri9yz</targetRef>
+      </dataOutputAssociation>
+    </serviceTask>
+    <sequenceFlow id="Flow_0g62f3h" sourceRef="look-for-delivery" targetRef="delivery-information" />
+    <sequenceFlow id="sid-EFF2F60C-1C7F-4D2A-8F6E-F361DA4F7EB7" name="" sourceRef="delivery-information" targetRef="compute-time" />
+    <sequenceFlow id="Flow_1cw1a9a" sourceRef="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" targetRef="look-for-delivery" />
+    <sequenceFlow id="Flow_1ee9esq" sourceRef="compute-time" targetRef="sid-6AEA69D5-7B27-470C-9DD9-F8366CAE7CCB" />
+    <dataObjectReference id="DataObjectReference_0sri9yz" name="Delivery address" dataObjectRef="DataObject_0n4unoa" />
+    <dataObject id="DataObject_0n4unoa" />
+    <serviceTask id="prescription-validation" name="Validate Prescription" implementation="##WebService" camunda:type="external" camunda:topic="prescription-validation">
+      <incoming>sid-B7E314E1-695A-4F13-8B23-CA438A3F2CAA</incoming>
+      <outgoing>Flow_1flh2ym</outgoing>
+    </serviceTask>
+    <sequenceFlow id="sid-B7E314E1-695A-4F13-8B23-CA438A3F2CAA" name="" sourceRef="ministry-health" targetRef="prescription-validation" />
+    <exclusiveGateway id="Gateway_1b8efe9">
+      <incoming>Flow_1flh2ym</incoming>
+      <outgoing>Flow_13a7qan</outgoing>
+      <outgoing>Flow_1m39xao</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_1flh2ym" sourceRef="prescription-validation" targetRef="Gateway_1b8efe9" />
+    <sequenceFlow id="Flow_13a7qan" name="prescription accepted" sourceRef="Gateway_1b8efe9" targetRef="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679">
+      <conditionExpression xsi:type="tFormalExpression">${prescription_valid.equals("true")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1m39xao" name="prescription rejected" sourceRef="Gateway_1b8efe9" targetRef="report-creation">
+      <conditionExpression xsi:type="tFormalExpression">${prescription_valid.equals("true")}</conditionExpression>
+    </sequenceFlow>
+  </process>
+  <message id="Message_1p6exn1" name="New_order" />
+  <bpmndi:BPMNDiagram id="sid-d0bf06a4-7f65-4a56-953e-d3227c569552">
+    <bpmndi:BPMNPlane id="sid-73ff084e-3d58-49c7-a3b9-f42dc2fad762" bpmnElement="SmartPharma">
+      <bpmndi:BPMNEdge id="Flow_0k0bxq6_di" bpmnElement="Flow_0k0bxq6">
+        <omgdi:waypoint x="3890" y="262" />
+        <omgdi:waypoint x="3980" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rxcyl5_di" bpmnElement="Flow_1rxcyl5">
+        <omgdi:waypoint x="4080" y="262" />
+        <omgdi:waypoint x="4162" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0guhwbe_di" bpmnElement="Flow_0guhwbe">
+        <omgdi:waypoint x="3710" y="262" />
+        <omgdi:waypoint x="3790" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE_di" bpmnElement="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE">
+        <omgdi:waypoint x="440" y="314" />
+        <omgdi:waypoint x="471" y="314" />
+        <omgdi:waypoint x="471" y="313" />
+        <omgdi:waypoint x="501" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-F21BC459-2F77-40BE-8892-2ED015D274CD_di" bpmnElement="sid-F21BC459-2F77-40BE-8892-2ED015D274CD">
+        <omgdi:waypoint x="2990" y="570" />
+        <omgdi:waypoint x="3411" y="570" />
+        <omgdi:waypoint x="3411" y="281" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02_di" bpmnElement="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02">
+        <omgdi:waypoint x="541" y="314" />
+        <omgdi:waypoint x="804" y="314" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="636" y="286" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9_di" bpmnElement="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9">
+        <omgdi:waypoint x="843" y="314" />
+        <omgdi:waypoint x="919" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-9F168CE7-3772-4255-8C9B-C5735EB3099C_di" bpmnElement="sid-9F168CE7-3772-4255-8C9B-C5735EB3099C">
+        <omgdi:waypoint x="522" y="333" />
+        <omgdi:waypoint x="522" y="501" />
+        <omgdi:waypoint x="562" y="501" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="531" y="366" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9_di" bpmnElement="sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9">
+        <omgdi:waypoint x="2228" y="314" />
+        <omgdi:waypoint x="2260" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-73239616-55AD-43CD-9B6C-25EEC151071D_di" bpmnElement="sid-73239616-55AD-43CD-9B6C-25EEC151071D">
+        <omgdi:waypoint x="2280" y="334" />
+        <omgdi:waypoint x="2280" y="481" />
+        <omgdi:waypoint x="2712" y="481" />
+        <omgdi:waypoint x="2712" y="510" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="2367" y="463" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-FA4826D6-9275-4733-8736-07F7DFF7359A_di" bpmnElement="sid-FA4826D6-9275-4733-8736-07F7DFF7359A">
+        <omgdi:waypoint x="2080" y="314" />
+        <omgdi:waypoint x="2112" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-C6A5144D-90C5-4AF3-98B7-F702AE85A25A_di" bpmnElement="sid-C6A5144D-90C5-4AF3-98B7-F702AE85A25A">
+        <omgdi:waypoint x="2787" y="570" />
+        <omgdi:waypoint x="2890" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-E3140F63-9D17-437D-A1DA-CF5EEE763502_di" bpmnElement="sid-E3140F63-9D17-437D-A1DA-CF5EEE763502">
+        <omgdi:waypoint x="1883" y="314" />
+        <omgdi:waypoint x="1980" y="314" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1907" y="286" width="45" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1_di" bpmnElement="sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1">
+        <omgdi:waypoint x="1612" y="314" />
+        <omgdi:waypoint x="1662" y="314" />
+        <omgdi:waypoint x="1662" y="313" />
+        <omgdi:waypoint x="1710" y="313" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1618" y="286" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5_di" bpmnElement="sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5">
+        <omgdi:waypoint x="1810" y="313" />
+        <omgdi:waypoint x="1844" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA_di" bpmnElement="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA">
+        <omgdi:waypoint x="939" y="294" />
+        <omgdi:waypoint x="939" y="124" />
+        <omgdi:waypoint x="1003" y="124" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-C692AC66-77FE-4415-A788-051331206572_di" bpmnElement="sid-C692AC66-77FE-4415-A788-051331206572">
+        <omgdi:waypoint x="1103" y="124" />
+        <omgdi:waypoint x="1220" y="124" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-B7E314E1-695A-4F13-8B23-CA438A3F2CAA_di" bpmnElement="sid-B7E314E1-695A-4F13-8B23-CA438A3F2CAA">
+        <omgdi:waypoint x="662" y="501" />
+        <omgdi:waypoint x="774" y="501" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-9C77C21E-C875-41F3-BE06-DA66FEA2486F_di" bpmnElement="sid-9C77C21E-C875-41F3-BE06-DA66FEA2486F">
+        <omgdi:waypoint x="1103" y="313" />
+        <omgdi:waypoint x="1220" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3_di" bpmnElement="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3">
+        <omgdi:waypoint x="1320" y="313" />
+        <omgdi:waypoint x="1455" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0_di" bpmnElement="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0">
+        <omgdi:waypoint x="1320" y="124" />
+        <omgdi:waypoint x="1475" y="124" />
+        <omgdi:waypoint x="1475" y="293" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684_di" bpmnElement="sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684">
+        <omgdi:waypoint x="1594" y="333" />
+        <omgdi:waypoint x="1594" y="570" />
+        <omgdi:waypoint x="2687" y="570" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1598" y="416" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-58109D60-EABC-41D4-953C-1C7A8BC0D851_di" bpmnElement="sid-58109D60-EABC-41D4-953C-1C7A8BC0D851">
+        <omgdi:waypoint x="1864" y="333" />
+        <omgdi:waypoint x="1864" y="530" />
+        <omgdi:waypoint x="2687" y="530" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1868" y="406" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D_di" bpmnElement="sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D">
+        <omgdi:waypoint x="1495" y="314" />
+        <omgdi:waypoint x="1573" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-5679AFAA-B587-43E3-830B-5EECAF255ABB_di" bpmnElement="sid-5679AFAA-B587-43E3-830B-5EECAF255ABB">
+        <omgdi:waypoint x="958" y="313" />
+        <omgdi:waypoint x="1003" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1iavjiq_di" bpmnElement="Flow_1iavjiq">
+        <omgdi:waypoint x="198" y="314" />
+        <omgdi:waypoint x="340" y="314" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18g47bg_di" bpmnElement="Flow_18g47bg">
+        <omgdi:waypoint x="3430" y="262" />
+        <omgdi:waypoint x="3610" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g62f3h_di" bpmnElement="Flow_0g62f3h">
+        <omgdi:waypoint x="2660" y="270" />
+        <omgdi:waypoint x="2738" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-EFF2F60C-1C7F-4D2A-8F6E-F361DA4F7EB7_di" bpmnElement="sid-EFF2F60C-1C7F-4D2A-8F6E-F361DA4F7EB7">
+        <omgdi:waypoint x="2838" y="270" />
+        <omgdi:waypoint x="2918" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cw1a9a_di" bpmnElement="Flow_1cw1a9a">
+        <omgdi:waypoint x="2300" y="314" />
+        <omgdi:waypoint x="2430" y="314" />
+        <omgdi:waypoint x="2430" y="270" />
+        <omgdi:waypoint x="2560" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ee9esq_di" bpmnElement="Flow_1ee9esq">
+        <omgdi:waypoint x="3018" y="270" />
+        <omgdi:waypoint x="3204" y="270" />
+        <omgdi:waypoint x="3204" y="262" />
+        <omgdi:waypoint x="3390" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1flh2ym_di" bpmnElement="Flow_1flh2ym">
+        <omgdi:waypoint x="874" y="501" />
+        <omgdi:waypoint x="995" y="501" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13a7qan_di" bpmnElement="Flow_13a7qan">
+        <omgdi:waypoint x="1020" y="476" />
+        <omgdi:waypoint x="1020" y="410" />
+        <omgdi:waypoint x="824" y="410" />
+        <omgdi:waypoint x="824" y="333" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="895" y="376" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m39xao_di" bpmnElement="Flow_1m39xao">
+        <omgdi:waypoint x="1020" y="526" />
+        <omgdi:waypoint x="1020" y="630" />
+        <omgdi:waypoint x="2737" y="630" />
+        <omgdi:waypoint x="2737" y="590" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1851" y="636" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="control-medicine_di" bpmnElement="control-medicine">
+        <omgdc:Bounds x="340" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-6AEA69D5-7B27-470C-9DD9-F8366CAE7CCB_di" bpmnElement="sid-6AEA69D5-7B27-470C-9DD9-F8366CAE7CCB" isMarkerVisible="true">
+        <omgdc:Bounds x="3390" y="242" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679_di" bpmnElement="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679" isMarkerVisible="true">
+        <omgdc:Bounds x="804" y="293" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15_di" bpmnElement="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" isMarkerVisible="true">
+        <omgdc:Bounds x="501" y="293" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A_di" bpmnElement="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" isMarkerVisible="true">
+        <omgdc:Bounds x="2260" y="294" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="validate-payment_di" bpmnElement="validate-payment">
+        <omgdc:Bounds x="2112" y="274" width="116" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="report-notification_di" bpmnElement="report-notification">
+        <omgdc:Bounds x="2890" y="530" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="payment-delegation_di" bpmnElement="payment-delegation">
+        <omgdc:Bounds x="1980" y="274" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="check-stock_di" bpmnElement="check-stock">
+        <omgdc:Bounds x="1710" y="273" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="user-information_di" bpmnElement="user-information">
+        <omgdc:Bounds x="1003" y="84" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="prescription-validation_di" bpmnElement="prescription-validation">
+        <omgdc:Bounds x="774" y="461" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-CA724742-8F09-407E-8BC5-E8B10B9565C8_2_di" bpmnElement="sid-CA724742-8F09-407E-8BC5-E8B10B9565C8_2">
+        <omgdc:Bounds x="677" y="378" width="68" height="63" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="682" y="398" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-86E01E7B-8EB7-4F56-BB80-AE41BEBD95FB_2_di" bpmnElement="sid-86E01E7B-8EB7-4F56-BB80-AE41BEBD95FB_2">
+        <omgdc:Bounds x="1342" y="195" width="68" height="63" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1336" y="215" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="check-address_di" bpmnElement="check-address">
+        <omgdc:Bounds x="1220" y="273" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-3367D435-52F1-473B-AC75-D91256B4A065_2_di" bpmnElement="sid-3367D435-52F1-473B-AC75-D91256B4A065_2">
+        <omgdc:Bounds x="1113" y="195" width="62" height="63" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1103" y="215" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="validate-information_di" bpmnElement="validate-information">
+        <omgdc:Bounds x="1220" y="84" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="report-creation_di" bpmnElement="report-creation">
+        <omgdc:Bounds x="2687" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0_di" bpmnElement="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" isMarkerVisible="true">
+        <omgdc:Bounds x="1844" y="293" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1_di" bpmnElement="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" isMarkerVisible="true">
+        <omgdc:Bounds x="1573" y="293" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D_di" bpmnElement="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D">
+        <omgdc:Bounds x="1455" y="293" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ministry-health_di" bpmnElement="ministry-health">
+        <omgdc:Bounds x="562" y="461" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="google-api_di" bpmnElement="google-api">
+        <omgdc:Bounds x="1003" y="273" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416_di" bpmnElement="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416">
+        <omgdc:Bounds x="918" y="293" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rmc5jp_di" bpmnElement="new_order">
+        <omgdc:Bounds x="162" y="296" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="152" y="328" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f2ctcu_di" bpmnElement="assign-delivery">
+        <omgdc:Bounds x="3610" y="222" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f34udg_di" bpmnElement="Activity_0241sqj">
+        <omgdc:Bounds x="3790" y="222" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19x7r92_di" bpmnElement="delivery-status">
+        <omgdc:Bounds x="3980" y="222" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cwtkxd_di" bpmnElement="Event_1cwtkxd">
+        <omgdc:Bounds x="4162" y="244" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="look-for-delivery_di" bpmnElement="look-for-delivery">
+        <omgdc:Bounds x="2560" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-CCC1A31C-815A-40AF-982A-589CF77D0661_2_di" bpmnElement="sid-CCC1A31C-815A-40AF-982A-589CF77D0661_2">
+        <omgdc:Bounds x="2904" y="376" width="87" height="63" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="2915" y="396" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-6D5C13FC-E394-4A2A-916C-BE8D5C32967A_2_di" bpmnElement="sid-6D5C13FC-E394-4A2A-916C-BE8D5C32967A_2">
+        <omgdc:Bounds x="3072" y="376" width="68" height="63" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="3079" y="396" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="delivery-information_di" bpmnElement="delivery-information">
+        <omgdc:Bounds x="2738" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="compute-time_di" bpmnElement="compute-time">
+        <omgdc:Bounds x="2918" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0sri9yz_di" bpmnElement="DataObjectReference_0sri9yz">
+        <omgdc:Bounds x="3036" y="148" width="68" height="63" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="3030" y="168" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1b8efe9_di" bpmnElement="Gateway_1b8efe9" isMarkerVisible="true">
+        <omgdc:Bounds x="995" y="476" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="sid-587323F6-0FC7-43C1-A995-2B979E159459_di" bpmnElement="sid-587323F6-0FC7-43C1-A995-2B979E159459">
+        <omgdi:waypoint x="655" y="461" />
+        <omgdi:waypoint x="677" y="441" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-0B5B6789-4E5B-4FFA-893A-D4C5988551F8_di" bpmnElement="sid-0B5B6789-4E5B-4FFA-893A-D4C5988551F8">
+        <omgdi:waypoint x="1319" y="273" />
+        <omgdi:waypoint x="1342" y="254" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-60236C75-46D3-49DB-8F91-F71B5E5F317B_di" bpmnElement="sid-60236C75-46D3-49DB-8F91-F71B5E5F317B">
+        <omgdi:waypoint x="1095" y="273" />
+        <omgdi:waypoint x="1113" y="256" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-4D3C8346-81E0-4A36-B373-11C11E76A744_di" bpmnElement="sid-4D3C8346-81E0-4A36-B373-11C11E76A744">
+        <omgdi:waypoint x="2962" y="310" />
+        <omgdi:waypoint x="2953" y="376" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-9301DF09-5AED-4401-834E-E631C1A2A35D_di" bpmnElement="sid-9301DF09-5AED-4401-834E-E631C1A2A35D">
+        <omgdi:waypoint x="3009" y="310" />
+        <omgdi:waypoint x="3075" y="376" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0pwq8i6_di" bpmnElement="DataOutputAssociation_0pwq8i6">
+        <omgdi:waypoint x="3012" y="231" />
+        <omgdi:waypoint x="3036" y="209" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+    <bpmndi:BPMNLabelStyle id="sid-1552479a-d2c2-4d9e-935b-c3878636395b">
+      <omgdc:Font name="Arial" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+    </bpmndi:BPMNLabelStyle>
+    <bpmndi:BPMNLabelStyle id="sid-6a6c88ab-de66-4a6d-8950-49150a2faa4a">
+      <omgdc:Font name="Arial" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+    </bpmndi:BPMNLabelStyle>
+    <bpmndi:BPMNLabelStyle id="sid-fa75f4b3-cd55-473f-8828-18dbe1904af6">
+      <omgdc:Font size="10" isBold="false" isItalic="false" />
+    </bpmndi:BPMNLabelStyle>
+    <bpmndi:BPMNLabelStyle id="sid-6a8f8d48-06cd-40af-afdf-e380557dab33">
+      <omgdc:Font size="9" isBold="false" isItalic="false" />
+    </bpmndi:BPMNLabelStyle>
+  </bpmndi:BPMNDiagram>
+</definitions>
