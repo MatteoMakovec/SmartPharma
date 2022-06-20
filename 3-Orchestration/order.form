@@ -1,6 +1,10 @@
 {
-  "schemaVersion": 2,
   "components": [
+    {
+      "text": "### Prescription",
+      "type": "text",
+      "id": "Field_1meh9sr"
+    },
     {
       "label": "Prescription",
       "type": "textfield",
@@ -8,12 +12,39 @@
       "key": "prescription"
     },
     {
+      "text": "### Delivery Address",
+      "type": "text",
+      "id": "Field_0tgm04k"
+    },
+    {
       "label": "Delivery address",
       "type": "textfield",
       "id": "Field_1ln5zt1",
       "key": "address"
+    },
+    {
+      "text": "### Personal Information",
+      "type": "text",
+      "id": "Field_1oit5kv"
+    },
+    {
+      "label": "Name",
+      "type": "textfield",
+      "id": "Field_1wvhjzx",
+      "key": "name"
+    },
+    {
+      "label": "Tax Code",
+      "type": "textfield",
+      "id": "Field_1nkzaat",
+      "key": "tax-code"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "order"
+  "id": "order",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }
