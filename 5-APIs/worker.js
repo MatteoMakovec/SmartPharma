@@ -33,11 +33,13 @@ client.subscribe("control-medicine", async function ({ task, taskService }) {
   await taskService.complete(task, process_vars);
 });
 
+
 // Contact Ministry of Health
 client.subscribe("ministry-health", async function ({ task, taskService }) {
   console.log(`PRESCRIPTION SENT TO MINISTRY OF HEALTH`);
   await taskService.complete(task);
 });
+
 
 // Validate Prescription
 client.subscribe("prescription-validation", async function ({ task, taskService }) {
