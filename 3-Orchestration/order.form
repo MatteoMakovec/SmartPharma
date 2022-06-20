@@ -6,6 +6,12 @@
       "type": "textfield",
       "id": "Field_1d86d0b",
       "key": "prescription"
+    },
+    {
+      "label": "Delivery address",
+      "type": "textfield",
+      "id": "Field_1ln5zt1",
+      "key": "address"
     }
   ],
   "type": "default",
