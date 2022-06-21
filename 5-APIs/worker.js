@@ -92,3 +92,67 @@ client.subscribe("check-address", async function ({ task, taskService }) {
     console.log(`ADDRESS CHECKED`);
     await taskService.complete(task,process_vars);
   });
+
+  // Check Stock Availability
+  client.subscribe("check-stock", async function ({ task, taskService }) {
+    const process_vars = new Variables();
+    process_vars.set("stock_available", "true");
+
+    console.log(`STOCK CHECKED`);
+    await taskService.complete(task,process_vars);
+  });
+
+  // Payment Delegation
+  client.subscribe("payment-delegation", async function ({ task, taskService }) {
+    console.log(`PAYMENT REQUEST SENT TO THE THIRD PARTY SERVICE`);
+    await taskService.complete(task);
+  });
+  
+  // Validate Payment
+  client.subscribe("validate-payment", async function ({ task, taskService }) {
+    const process_vars = new Variables();
+    process_vars.set("payment_confirmation", "true");
+    
+    console.log(`PAYMENT VALIDATED`);
+    await taskService.complete(task, process_vars);
+  });
+
+  // Report Creation
+  client.subscribe("report-creation", async function ({ task, taskService }) {
+    
+    console.log(`REPORT CREATED`);
+    await taskService.complete(task);
+  });
+
+  // Report Notification
+  client.subscribe("report-notification", async function ({ task, taskService }) {
+    
+    console.log(`REPORT NOTIFIED`);
+    await taskService.complete(task);
+  });
+
+  // Looking for an available Delivery Man
+  client.subscribe("looking-delivery", async function ({ task, taskService }) {
+    
+    console.log(`DELIVERY MAN FOUND`);
+    await taskService.complete(task);
+  });
+
+  // Retrieve Delivery Man Information
+  client.subscribe("delivery-information", async function ({ task, taskService }) {
+    console.log(`RETRIEVE CURRENT DELIVERY MAN INFORMATION`);
+    await taskService.complete(task);
+  });
+
+  // Compute Delivery Time
+  client.subscribe("compute-time", async function ({ task, taskService }) {
+    console.log(`COMPUTE DELIVERY TIME`);
+    await taskService.complete(task);
+  });
+
+  // Assign Delivery
+  client.subscribe("assign-delivery", async function ({ task, taskService }) {
+    
+    console.log(`DELIVERY MAN ASSIGNED`);
+    await taskService.complete(task);
+  });
