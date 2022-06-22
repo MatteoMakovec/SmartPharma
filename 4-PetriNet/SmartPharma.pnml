@@ -3,6 +3,81 @@
 Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
 <pnml>
   <net type="http://www.informatik.hu-berlin.de/top/pntd/ptNetb" id="noID">
+    <place id="p1">
+      <name>
+        <text>Input</text>
+        <graphics>
+          <offset x="20" y="410"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="20" y="370"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+      <initialMarking>
+        <text>1</text>
+      </initialMarking>
+    </place>
+    <place id="p2">
+      <name>
+        <text/>
+        <graphics>
+          <offset x="310" y="410"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="311" y="370"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+    </place>
+    <place id="p4">
+      <name>
+        <text/>
+        <graphics>
+          <offset x="530" y="410"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="530" y="370"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+    </place>
+    <place id="p5">
+      <name>
+        <text/>
+        <graphics>
+          <offset x="620" y="300"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="620" y="260"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+    </place>
+    <place id="p7">
+      <name>
+        <text/>
+        <graphics>
+          <offset x="1020" y="300"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="1020" y="260"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+    </place>
+    <place id="p9">
+      <name>
+        <text/>
+        <graphics>
+          <offset x="670" y="520"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="667" y="480"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+    </place>
     <place id="p10">
       <name>
         <text/>
@@ -12,6 +87,18 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
       </name>
       <graphics>
         <position x="1020" y="480"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+    </place>
+    <place id="p31">
+      <name>
+        <text>p31</text>
+        <graphics>
+          <offset x="2550" y="330"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="2554" y="287"/>
         <dimension x="40" y="40"/>
       </graphics>
     </place>
@@ -171,93 +258,74 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
         <dimension x="40" y="40"/>
       </graphics>
     </place>
-    <place id="p1">
+    <transition id="t4">
       <name>
-        <text>Input</text>
+        <text>Validate Prescription</text>
         <graphics>
-          <offset x="20" y="410"/>
+          <offset x="360" y="520"/>
         </graphics>
       </name>
       <graphics>
-        <position x="20" y="370"/>
+        <position x="350" y="484"/>
         <dimension x="40" y="40"/>
       </graphics>
-      <initialMarking>
-        <text>1</text>
-      </initialMarking>
-    </place>
-    <place id="p2">
-      <name>
-        <text/>
-        <graphics>
-          <offset x="310" y="410"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="311" y="370"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-    </place>
-    <place id="p4">
+      <toolspecific tool="WoPeD" version="1.0">
+        <time>0</time>
+        <timeUnit>1</timeUnit>
+        <orientation>1</orientation>
+      </toolspecific>
+    </transition>
+    <transition id="t5">
       <name>
         <text/>
         <graphics>
-          <offset x="530" y="410"/>
+          <offset x="600" y="410"/>
         </graphics>
       </name>
       <graphics>
-        <position x="530" y="370"/>
+        <position x="603" y="370"/>
         <dimension x="40" y="40"/>
       </graphics>
-    </place>
-    <place id="p5">
+      <toolspecific tool="WoPeD" version="1.0">
+        <time>0</time>
+        <timeUnit>1</timeUnit>
+        <orientation>1</orientation>
+      </toolspecific>
+    </transition>
+    <transition id="t7">
       <name>
         <text/>
         <graphics>
-          <offset x="620" y="300"/>
+          <offset x="1170" y="530"/>
         </graphics>
       </name>
       <graphics>
-        <position x="620" y="260"/>
+        <position x="1173" y="490"/>
         <dimension x="40" y="40"/>
       </graphics>
-    </place>
-    <place id="p7">
+      <toolspecific tool="WoPeD" version="1.0">
+        <time>0</time>
+        <timeUnit>1</timeUnit>
+        <orientation>1</orientation>
+      </toolspecific>
+    </transition>
+    <transition id="t8">
       <name>
-        <text/>
+        <text>Validate information</text>
         <graphics>
-          <offset x="1020" y="300"/>
+          <offset x="820" y="300"/>
         </graphics>
       </name>
       <graphics>
-        <position x="1020" y="260"/>
+        <position x="815" y="260"/>
         <dimension x="40" y="40"/>
       </graphics>
-    </place>
-    <place id="p9">
-      <name>
-        <text/>
-        <graphics>
-          <offset x="670" y="520"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="667" y="480"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-    </place>
-    <place id="p31">
-      <name>
-        <text>p31</text>
-        <graphics>
-          <offset x="2550" y="330"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="2554" y="287"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-    </place>
+      <toolspecific tool="WoPeD" version="1.0">
+        <time>0</time>
+        <timeUnit>1</timeUnit>
+        <orientation>1</orientation>
+      </toolspecific>
+    </transition>
     <transition id="t10">
       <name>
         <text>Check delivery address</text>
@@ -267,6 +335,40 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
       </name>
       <graphics>
         <position x="825" y="480"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+      <toolspecific tool="WoPeD" version="1.0">
+        <time>0</time>
+        <timeUnit>1</timeUnit>
+        <orientation>1</orientation>
+      </toolspecific>
+    </transition>
+    <transition id="t32">
+      <name>
+        <text>Delivery final status</text>
+        <graphics>
+          <offset x="2950" y="150"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="2958" y="102"/>
+        <dimension x="40" y="40"/>
+      </graphics>
+      <toolspecific tool="WoPeD" version="1.0">
+        <time>0</time>
+        <timeUnit>1</timeUnit>
+        <orientation>1</orientation>
+      </toolspecific>
+    </transition>
+    <transition id="t31">
+      <name>
+        <text>Confirmation notification</text>
+        <graphics>
+          <offset x="2720" y="140"/>
+        </graphics>
+      </name>
+      <graphics>
+        <position x="2722" y="102"/>
         <dimension x="40" y="40"/>
       </graphics>
       <toolspecific tool="WoPeD" version="1.0">
@@ -573,108 +675,6 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
       </name>
       <graphics>
         <position x="424" y="296"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-      <toolspecific tool="WoPeD" version="1.0">
-        <time>0</time>
-        <timeUnit>1</timeUnit>
-        <orientation>1</orientation>
-      </toolspecific>
-    </transition>
-    <transition id="t4">
-      <name>
-        <text>Validate Prescription</text>
-        <graphics>
-          <offset x="360" y="520"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="350" y="484"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-      <toolspecific tool="WoPeD" version="1.0">
-        <time>0</time>
-        <timeUnit>1</timeUnit>
-        <orientation>1</orientation>
-      </toolspecific>
-    </transition>
-    <transition id="t5">
-      <name>
-        <text/>
-        <graphics>
-          <offset x="600" y="410"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="603" y="370"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-      <toolspecific tool="WoPeD" version="1.0">
-        <time>0</time>
-        <timeUnit>1</timeUnit>
-        <orientation>1</orientation>
-      </toolspecific>
-    </transition>
-    <transition id="t7">
-      <name>
-        <text/>
-        <graphics>
-          <offset x="1170" y="530"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="1173" y="490"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-      <toolspecific tool="WoPeD" version="1.0">
-        <time>0</time>
-        <timeUnit>1</timeUnit>
-        <orientation>1</orientation>
-      </toolspecific>
-    </transition>
-    <transition id="t8">
-      <name>
-        <text>Validate information</text>
-        <graphics>
-          <offset x="820" y="300"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="815" y="260"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-      <toolspecific tool="WoPeD" version="1.0">
-        <time>0</time>
-        <timeUnit>1</timeUnit>
-        <orientation>1</orientation>
-      </toolspecific>
-    </transition>
-    <transition id="t32">
-      <name>
-        <text>Delivery final status</text>
-        <graphics>
-          <offset x="2950" y="150"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="2958" y="102"/>
-        <dimension x="40" y="40"/>
-      </graphics>
-      <toolspecific tool="WoPeD" version="1.0">
-        <time>0</time>
-        <timeUnit>1</timeUnit>
-        <orientation>1</orientation>
-      </toolspecific>
-    </transition>
-    <transition id="t31">
-      <name>
-        <text>Confirmation notification</text>
-        <graphics>
-          <offset x="2720" y="140"/>
-        </graphics>
-      </name>
-      <graphics>
-        <position x="2722" y="102"/>
         <dimension x="40" y="40"/>
       </graphics>
       <toolspecific tool="WoPeD" version="1.0">
@@ -1413,11 +1413,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
     </arc>
     <toolspecific tool="WoPeD" version="1.0">
       <bounds>
-        <position x="2" y="26"/>
-        <dimension x="1899" y="889"/>
+        <position x="11" y="33"/>
+        <dimension x="1875" y="762"/>
       </bounds>
-      <scale>74</scale>
-      <treeWidthRight>1579</treeWidthRight>
+      <scale>55</scale>
+      <treeWidthRight>1555</treeWidthRight>
       <overviewPanelVisible>true</overviewPanelVisible>
       <treeHeightOverview>100</treeHeightOverview>
       <treePanelVisible>true</treePanelVisible>
