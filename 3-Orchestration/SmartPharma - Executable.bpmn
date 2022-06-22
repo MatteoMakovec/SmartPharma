@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:signavio="http://www.signavio.com" id="sid-575f48f0-34f3-4231-a1e3-48567a39c6d4" targetNamespace="http://www.signavio.com" expressionLanguage="http://www.w3.org/TR/XPath" exporter="Camunda Modeler" exporterVersion="4.12.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:signavio="http://www.signavio.com" id="sid-575f48f0-34f3-4231-a1e3-48567a39c6d4" targetNamespace="http://www.signavio.com" expressionLanguage="http://www.w3.org/TR/XPath" exporter="Camunda Modeler" exporterVersion="5.0.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
   <process id="SmartPharma" name="SmartPharma" processType="None" isClosed="false" isExecutable="true">
     <extensionElements>
       <signavio:signavioDiagramMetaData metaKey="prozessreifegrad" metaValue="" />
@@ -23,6 +23,7 @@
             <camunda:validation />
           </camunda:formField>
           <camunda:formField id="tax-code" label="Tax Code" type="string" />
+          <camunda:formField id="medicine" type="string" defaultValue="medicine" />
         </camunda:formData>
       </extensionElements>
       <outgoing>Flow_1iavjiq</outgoing>
@@ -49,14 +50,17 @@
       <outgoing>Flow_1cw1a9a</outgoing>
     </exclusiveGateway>
     <serviceTask id="validate-payment" name="Validate payment process" implementation="##WebService" camunda:type="external" camunda:topic="validate-payment">
+      <extensionElements />
       <incoming>sid-E3140F63-9D17-437D-A1DA-CF5EEE763502</incoming>
       <outgoing>sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9</outgoing>
     </serviceTask>
     <serviceTask id="check-stock" name="Check stock availability" implementation="##WebService" camunda:type="external" camunda:topic="check-stock">
+      <extensionElements />
       <incoming>sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1</incoming>
       <outgoing>sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5</outgoing>
     </serviceTask>
-    <serviceTask id="check-address" name="Check Delivery address" implementation="##WebService" camunda:type="external" camunda:topic="check-address">
+    <serviceTask id="check-address" name="Check Delivery address" camunda:asyncAfter="true" implementation="##WebService" camunda:type="external" camunda:topic="check-address">
+      <extensionElements />
       <incoming>Flow_0x3r9mg</incoming>
       <outgoing>sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3</outgoing>
       <ioSpecification>
@@ -65,7 +69,8 @@
         <outputSet name="DefaultOutputSet" />
       </ioSpecification>
     </serviceTask>
-    <serviceTask id="validate-information" name="Validate Information" implementation="##WebService" camunda:type="external" camunda:topic="validate-information">
+    <serviceTask id="validate-information" name="Validate Information" camunda:asyncAfter="true" implementation="##WebService" camunda:type="external" camunda:topic="validate-information">
+      <extensionElements />
       <incoming>sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA</incoming>
       <outgoing>sid-972DBAAC-B32F-4982-B650-FFE85AD657A0</outgoing>
       <ioSpecification>
@@ -84,20 +89,15 @@
       <outgoing>sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1</outgoing>
       <outgoing>sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684</outgoing>
     </exclusiveGateway>
-    <parallelGateway id="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" name="" gatewayDirection="Converging">
-      <incoming>sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3</incoming>
-      <incoming>sid-972DBAAC-B32F-4982-B650-FFE85AD657A0</incoming>
-      <outgoing>sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D</outgoing>
-    </parallelGateway>
     <sequenceFlow id="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE" name="" sourceRef="control-medicine" targetRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" />
-    <sequenceFlow id="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02" name="prescription not required" sourceRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" targetRef="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679">
+    <sequenceFlow id="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02" name="prescription is not required" sourceRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" targetRef="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679">
       <conditionExpression xsi:type="tFormalExpression">${prescription_required.equals("false")}</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9" name="" sourceRef="validate-payment" targetRef="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" />
     <sequenceFlow id="sid-73239616-55AD-43CD-9B6C-25EEC151071D" name="payment rejected" sourceRef="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" targetRef="Gateway_0ji4xfg">
       <conditionExpression xsi:type="tFormalExpression">${payment_confirmation.equals("false")}</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="sid-E3140F63-9D17-437D-A1DA-CF5EEE763502" name="medicine available" sourceRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" targetRef="validate-payment">
+    <sequenceFlow id="sid-E3140F63-9D17-437D-A1DA-CF5EEE763502" name="medicine is available" sourceRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" targetRef="validate-payment">
       <conditionExpression xsi:type="tFormalExpression">${stock_available.equals("true")}</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1" name="order information is valid" sourceRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" targetRef="check-stock">
@@ -105,20 +105,19 @@
     </sequenceFlow>
     <sequenceFlow id="sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5" name="" sourceRef="check-stock" targetRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" />
     <sequenceFlow id="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3" name="" sourceRef="check-address" targetRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" />
-    <sequenceFlow id="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0" name="" sourceRef="validate-information" targetRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" />
-    <sequenceFlow id="sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684" name="order information not valid" sourceRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" targetRef="Gateway_0ji4xfg">
+    <sequenceFlow id="sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684" name="order information is not valid" sourceRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" targetRef="Gateway_0ji4xfg">
       <conditionExpression xsi:type="tFormalExpression">${personal_info_valid.equals("false") or address_valid.equals("false")}</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="sid-58109D60-EABC-41D4-953C-1C7A8BC0D851" name="medicine not available" sourceRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" targetRef="Gateway_0ji4xfg">
+    <sequenceFlow id="sid-58109D60-EABC-41D4-953C-1C7A8BC0D851" name="medicine is not available" sourceRef="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" targetRef="Gateway_0ji4xfg">
       <conditionExpression xsi:type="tFormalExpression">${stock_available.equals("false")}</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D" name="" sourceRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" targetRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" />
     <sequenceFlow id="Flow_1iavjiq" sourceRef="new_order" targetRef="control-medicine" />
     <serviceTask id="look-for-delivery" name="Look for available Delivery men" camunda:type="external" camunda:topic="look-for-delivery">
       <incoming>Flow_1cw1a9a</incoming>
       <outgoing>Flow_0g62f3h</outgoing>
     </serviceTask>
     <serviceTask id="compute-time" name="Compute Delivery time" implementation="##WebService" camunda:type="external" camunda:topic="compute-time">
+      <extensionElements />
       <incoming>Flow_0g62f3h</incoming>
       <outgoing>Flow_1g41fqp</outgoing>
       <ioSpecification>
@@ -134,6 +133,7 @@
       <conditionExpression xsi:type="tFormalExpression">${payment_confirmation.equals("true")}</conditionExpression>
     </sequenceFlow>
     <serviceTask id="prescription-validation" name="Validate Prescription" implementation="##WebService" camunda:type="external" camunda:topic="prescription-validation">
+      <extensionElements />
       <incoming>Flow_0c7c09t</incoming>
       <outgoing>Flow_1flh2ym</outgoing>
     </serviceTask>
@@ -156,345 +156,347 @@
       <incoming>sid-73239616-55AD-43CD-9B6C-25EEC151071D</incoming>
       <outgoing>Flow_1xqragi</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="Flow_1g41fqp" sourceRef="compute-time" targetRef="Gateway_0p34qej" />
-    <exclusiveGateway id="Gateway_1rbij2l">
-      <incoming>Flow_09b04cq</incoming>
-      <incoming>Flow_0wjytkg</incoming>
-      <outgoing>Flow_0fz7guz</outgoing>
-    </exclusiveGateway>
-    <sequenceFlow id="Flow_09b04cq" sourceRef="report-notification" targetRef="Gateway_1rbij2l" />
-    <sequenceFlow id="Flow_0fz7guz" sourceRef="Gateway_1rbij2l" targetRef="Event_1cwtkxd" />
-    <sendTask id="report-notification" name="Denial notification" implementation="##WebService" camunda:type="external" camunda:topic="report-notification">
+    <sendTask id="denial-notification" name="Denial notification" implementation="##WebService" camunda:type="external" camunda:topic="denial-notification">
       <incoming>Flow_1m4hwue</incoming>
       <outgoing>Flow_09b04cq</outgoing>
     </sendTask>
-    <serviceTask id="report-creation" name="Report creation" implementation="##WebService" camunda:type="external" camunda:topic="report-creation">
-      <incoming>Flow_001udt1</incoming>
-      <outgoing>Flow_15esrt5</outgoing>
-    </serviceTask>
-    <exclusiveGateway id="Gateway_0p34qej">
-      <incoming>Flow_1xqragi</incoming>
-      <incoming>Flow_1g41fqp</incoming>
-      <outgoing>Flow_001udt1</outgoing>
-    </exclusiveGateway>
-    <sequenceFlow id="Flow_1xqragi" sourceRef="Gateway_0ji4xfg" targetRef="Gateway_0p34qej" />
     <sendTask id="confirmation-notification" name="Confirmation notification" camunda:type="external" camunda:topic="confirmation-notification">
-      <incoming>Flow_0wksoq8</incoming>
+      <incoming>Flow_1hvjknp</incoming>
       <outgoing>Flow_0is7f2h</outgoing>
     </sendTask>
-    <exclusiveGateway id="Gateway_1jwvfek">
-      <incoming>Flow_15esrt5</incoming>
-      <outgoing>Flow_1m4hwue</outgoing>
-      <outgoing>Flow_0vd0f2w</outgoing>
-    </exclusiveGateway>
-    <sequenceFlow id="Flow_15esrt5" sourceRef="report-creation" targetRef="Gateway_1jwvfek" />
-    <sequenceFlow id="Flow_1m4hwue" name="order rejected" sourceRef="Gateway_1jwvfek" targetRef="report-notification">
-      <conditionExpression xsi:type="tFormalExpression">${report.equals("false")}</conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="Flow_0c7c09t" name="prescription required" sourceRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" targetRef="prescription-validation">
+    <sequenceFlow id="Flow_0c7c09t" name="prescription is required" sourceRef="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" targetRef="prescription-validation">
       <conditionExpression xsi:type="tFormalExpression">${prescription_required.equals("true")}</conditionExpression>
     </sequenceFlow>
-    <parallelGateway id="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" name="" gatewayDirection="Diverging">
-      <incoming>sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9</incoming>
-      <outgoing>sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA</outgoing>
-      <outgoing>Flow_0x3r9mg</outgoing>
-    </parallelGateway>
-    <sequenceFlow id="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA" name="" sourceRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" targetRef="validate-information" />
     <sequenceFlow id="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9" name="" sourceRef="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679" targetRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" />
-    <sequenceFlow id="Flow_0x3r9mg" sourceRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" targetRef="check-address" />
-    <sequenceFlow id="Flow_001udt1" sourceRef="Gateway_0p34qej" targetRef="report-creation" />
     <sendTask id="assign-delivery" name="Assign Delivery man" camunda:type="external" camunda:topic="assign-delivery">
       <incoming>Flow_0vd0f2w</incoming>
-      <outgoing>Flow_0wksoq8</outgoing>
+      <outgoing>Flow_1hvjknp</outgoing>
     </sendTask>
-    <sequenceFlow id="Flow_0vd0f2w" name="ready for delivery" sourceRef="Gateway_1jwvfek" targetRef="assign-delivery">
-      <conditionExpression xsi:type="tFormalExpression">${report.equals("true")}</conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="Flow_0wksoq8" sourceRef="assign-delivery" targetRef="confirmation-notification" />
     <userTask id="delivery-status" name="Delivery performed confirmation" camunda:candidateGroups="delivery">
       <incoming>Flow_0is7f2h</incoming>
       <outgoing>Flow_0wjytkg</outgoing>
     </userTask>
     <sequenceFlow id="Flow_0is7f2h" sourceRef="confirmation-notification" targetRef="delivery-status" />
+    <sequenceFlow id="Flow_1hvjknp" sourceRef="assign-delivery" targetRef="confirmation-notification" />
+    <exclusiveGateway id="Gateway_1rbij2l">
+      <incoming>Flow_0wjytkg</incoming>
+      <incoming>Flow_09b04cq</incoming>
+      <outgoing>Flow_0fz7guz</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_0fz7guz" sourceRef="Gateway_1rbij2l" targetRef="Event_1cwtkxd" />
     <sequenceFlow id="Flow_0wjytkg" sourceRef="delivery-status" targetRef="Gateway_1rbij2l" />
+    <sequenceFlow id="Flow_09b04cq" sourceRef="denial-notification" targetRef="Gateway_1rbij2l" />
+    <exclusiveGateway id="Gateway_1jwvfek">
+      <incoming>Flow_15esrt5</incoming>
+      <outgoing>Flow_1m4hwue</outgoing>
+      <outgoing>Flow_0vd0f2w</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_1m4hwue" name="order rejected" sourceRef="Gateway_1jwvfek" targetRef="denial-notification">
+      <conditionExpression xsi:type="tFormalExpression">${report.equals("false")}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_0vd0f2w" name="ready for delivery" sourceRef="Gateway_1jwvfek" targetRef="assign-delivery">
+      <conditionExpression xsi:type="tFormalExpression">${report.equals("true")}</conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="report-creation" name="Report creation" implementation="##WebService" camunda:type="external" camunda:topic="report-creation">
+      <extensionElements />
+      <incoming>Flow_001udt1</incoming>
+      <outgoing>Flow_15esrt5</outgoing>
+    </serviceTask>
+    <sequenceFlow id="Flow_15esrt5" sourceRef="report-creation" targetRef="Gateway_1jwvfek" />
+    <exclusiveGateway id="Gateway_0p34qej">
+      <incoming>Flow_1g41fqp</incoming>
+      <incoming>Flow_1xqragi</incoming>
+      <outgoing>Flow_001udt1</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_001udt1" sourceRef="Gateway_0p34qej" targetRef="report-creation" />
+    <sequenceFlow id="Flow_1g41fqp" sourceRef="compute-time" targetRef="Gateway_0p34qej" />
+    <sequenceFlow id="Flow_1xqragi" sourceRef="Gateway_0ji4xfg" targetRef="Gateway_0p34qej" />
+    <sequenceFlow id="Flow_0x3r9mg" sourceRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" targetRef="check-address" />
+    <parallelGateway id="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" name="" gatewayDirection="Converging">
+      <incoming>sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3</incoming>
+      <incoming>sid-972DBAAC-B32F-4982-B650-FFE85AD657A0</incoming>
+      <outgoing>sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D</outgoing>
+    </parallelGateway>
+    <sequenceFlow id="sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D" name="" sourceRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" targetRef="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" />
+    <sequenceFlow id="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0" name="" sourceRef="validate-information" targetRef="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D" />
+    <sequenceFlow id="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA" name="" sourceRef="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" targetRef="validate-information" />
+    <parallelGateway id="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416" name="">
+      <incoming>sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9</incoming>
+      <outgoing>Flow_0x3r9mg</outgoing>
+      <outgoing>sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA</outgoing>
+    </parallelGateway>
   </process>
   <message id="Message_1p6exn1" name="New_order" />
   <bpmndi:BPMNDiagram id="sid-d0bf06a4-7f65-4a56-953e-d3227c569552">
     <bpmndi:BPMNPlane id="sid-73ff084e-3d58-49c7-a3b9-f42dc2fad762" bpmnElement="SmartPharma">
-      <bpmndi:BPMNEdge id="Flow_001udt1_di" bpmnElement="Flow_001udt1">
-        <omgdi:waypoint x="2505" y="450" />
-        <omgdi:waypoint x="2590" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0x3r9mg_di" bpmnElement="Flow_0x3r9mg">
-        <omgdi:waypoint x="878" y="313" />
-        <omgdi:waypoint x="940" y="313" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9_di" bpmnElement="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9">
-        <omgdi:waypoint x="763" y="314" />
-        <omgdi:waypoint x="839" y="314" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA_di" bpmnElement="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA">
-        <omgdi:waypoint x="859" y="294" />
-        <omgdi:waypoint x="859" y="124" />
-        <omgdi:waypoint x="940" y="124" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0c7c09t_di" bpmnElement="Flow_0c7c09t">
-        <omgdi:waypoint x="441" y="333" />
-        <omgdi:waypoint x="441" y="501" />
-        <omgdi:waypoint x="500" y="501" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="451" y="356" width="57" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1m4hwue_di" bpmnElement="Flow_1m4hwue">
-        <omgdi:waypoint x="2780" y="475" />
-        <omgdi:waypoint x="2780" y="551" />
-        <omgdi:waypoint x="3060" y="551" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="2786" y="494" width="68" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15esrt5_di" bpmnElement="Flow_15esrt5">
-        <omgdi:waypoint x="2690" y="450" />
-        <omgdi:waypoint x="2755" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xqragi_di" bpmnElement="Flow_1xqragi">
-        <omgdi:waypoint x="1945" y="551" />
-        <omgdi:waypoint x="2480" y="551" />
-        <omgdi:waypoint x="2480" y="475" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fz7guz_di" bpmnElement="Flow_0fz7guz">
-        <omgdi:waypoint x="3445" y="431" />
-        <omgdi:waypoint x="3502" y="431" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09b04cq_di" bpmnElement="Flow_09b04cq">
-        <omgdi:waypoint x="3160" y="551" />
-        <omgdi:waypoint x="3420" y="551" />
-        <omgdi:waypoint x="3420" y="456" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1g41fqp_di" bpmnElement="Flow_1g41fqp">
-        <omgdi:waypoint x="2400" y="315" />
-        <omgdi:waypoint x="2480" y="315" />
-        <omgdi:waypoint x="2480" y="425" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1m39xao_di" bpmnElement="Flow_1m39xao">
-        <omgdi:waypoint x="744" y="526" />
-        <omgdi:waypoint x="744" y="600" />
-        <omgdi:waypoint x="1920" y="600" />
-        <omgdi:waypoint x="1920" y="576" />
+        <omgdi:waypoint x="670" y="528" />
+        <omgdi:waypoint x="670" y="600" />
+        <omgdi:waypoint x="1710" y="600" />
+        <omgdi:waypoint x="1710" y="576" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="776" y="566" width="57" height="27" />
+          <omgdc:Bounds x="712" y="549" width="57" height="27" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13a7qan_di" bpmnElement="Flow_13a7qan">
-        <omgdi:waypoint x="744" y="476" />
-        <omgdi:waypoint x="744" y="333" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="751" y="436" width="57" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1flh2ym_di" bpmnElement="Flow_1flh2ym">
-        <omgdi:waypoint x="600" y="501" />
-        <omgdi:waypoint x="719" y="501" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1cw1a9a_di" bpmnElement="Flow_1cw1a9a">
-        <omgdi:waypoint x="1940" y="315" />
-        <omgdi:waypoint x="2120" y="315" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="1960" y="294" width="90" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0g62f3h_di" bpmnElement="Flow_0g62f3h">
-        <omgdi:waypoint x="2220" y="315" />
-        <omgdi:waypoint x="2300" y="315" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1iavjiq_di" bpmnElement="Flow_1iavjiq">
-        <omgdi:waypoint x="198" y="314" />
-        <omgdi:waypoint x="260" y="314" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D_di" bpmnElement="sid-5E43CD24-7D91-4950-A4E3-2B45251CEA3D">
-        <omgdi:waypoint x="1139" y="314" />
-        <omgdi:waypoint x="1180" y="314" />
-        <omgdi:waypoint x="1180" y="316" />
-        <omgdi:waypoint x="1221" y="316" />
+        <omgdi:waypoint x="1029" y="316" />
+        <omgdi:waypoint x="1075" y="316" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-58109D60-EABC-41D4-953C-1C7A8BC0D851_di" bpmnElement="sid-58109D60-EABC-41D4-953C-1C7A8BC0D851">
-        <omgdi:waypoint x="1570" y="335" />
-        <omgdi:waypoint x="1570" y="541" />
-        <omgdi:waypoint x="1905" y="541" />
+        <omgdi:waypoint x="1420" y="335" />
+        <omgdi:waypoint x="1420" y="541" />
+        <omgdi:waypoint x="1695" y="541" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="1574" y="412" width="63" height="27" />
+          <omgdc:Bounds x="1432" y="396" width="74" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684_di" bpmnElement="sid-99BD1F4E-7F6A-4617-B618-33AA8B6E0684">
-        <omgdi:waypoint x="1241" y="334" />
-        <omgdi:waypoint x="1241" y="561" />
-        <omgdi:waypoint x="1905" y="561" />
+        <omgdi:waypoint x="1095" y="334" />
+        <omgdi:waypoint x="1095" y="561" />
+        <omgdi:waypoint x="1695" y="561" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="1245" y="396" width="84" height="27" />
+          <omgdc:Bounds x="1099" y="396" width="84" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0_di" bpmnElement="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0">
-        <omgdi:waypoint x="1040" y="124" />
-        <omgdi:waypoint x="1120" y="124" />
-        <omgdi:waypoint x="1120" y="293" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3_di" bpmnElement="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3">
-        <omgdi:waypoint x="1040" y="313" />
-        <omgdi:waypoint x="1100" y="313" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5_di" bpmnElement="sid-73CA9AEC-72B1-4BE4-8507-252232EB56F5">
-        <omgdi:waypoint x="1490" y="315" />
-        <omgdi:waypoint x="1550" y="315" />
+        <omgdi:waypoint x="1340" y="315" />
+        <omgdi:waypoint x="1400" y="315" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1_di" bpmnElement="sid-CC2A908F-2C36-414E-BEFE-D57359C6DBA1">
-        <omgdi:waypoint x="1259" y="316" />
-        <omgdi:waypoint x="1325" y="316" />
-        <omgdi:waypoint x="1325" y="315" />
-        <omgdi:waypoint x="1390" y="315" />
+        <omgdi:waypoint x="1113" y="316" />
+        <omgdi:waypoint x="1240" y="316" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="1264" y="286" width="84" height="27" />
+          <omgdc:Bounds x="1128" y="276" width="84" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-E3140F63-9D17-437D-A1DA-CF5EEE763502_di" bpmnElement="sid-E3140F63-9D17-437D-A1DA-CF5EEE763502">
-        <omgdi:waypoint x="1589" y="316" />
-        <omgdi:waypoint x="1646" y="316" />
-        <omgdi:waypoint x="1646" y="315" />
-        <omgdi:waypoint x="1702" y="315" />
+        <omgdi:waypoint x="1440" y="315" />
+        <omgdi:waypoint x="1522" y="315" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="1601" y="286" width="45" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sid-73239616-55AD-43CD-9B6C-25EEC151071D_di" bpmnElement="sid-73239616-55AD-43CD-9B6C-25EEC151071D">
-        <omgdi:waypoint x="1920" y="335" />
-        <omgdi:waypoint x="1920" y="526" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="1927" y="481" width="85" height="14" />
+          <omgdc:Bounds x="1441" y="286" width="56" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9_di" bpmnElement="sid-ADDC513C-9EC7-4DC8-9EFD-5C2F8DE35CC9">
-        <omgdi:waypoint x="1818" y="315" />
-        <omgdi:waypoint x="1900" y="315" />
+        <omgdi:waypoint x="1638" y="315" />
+        <omgdi:waypoint x="1690" y="315" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02_di" bpmnElement="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02">
-        <omgdi:waypoint x="461" y="314" />
-        <omgdi:waypoint x="724" y="314" />
+      <bpmndi:BPMNEdge id="Flow_0fz7guz_di" bpmnElement="Flow_0fz7guz">
+        <omgdi:waypoint x="2845" y="430" />
+        <omgdi:waypoint x="2882" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-73239616-55AD-43CD-9B6C-25EEC151071D_di" bpmnElement="sid-73239616-55AD-43CD-9B6C-25EEC151071D">
+        <omgdi:waypoint x="1710" y="335" />
+        <omgdi:waypoint x="1710" y="526" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="482" y="286" width="76" height="27" />
+          <omgdc:Bounds x="1717" y="403" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE_di" bpmnElement="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE">
-        <omgdi:waypoint x="360" y="313" />
-        <omgdi:waypoint x="421" y="313" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vd0f2w_di" bpmnElement="Flow_0vd0f2w">
-        <omgdi:waypoint x="2780" y="425" />
-        <omgdi:waypoint x="2780" y="315" />
-        <omgdi:waypoint x="2870" y="315" />
+      <bpmndi:BPMNEdge id="Flow_1cw1a9a_di" bpmnElement="Flow_1cw1a9a">
+        <omgdi:waypoint x="1730" y="315" />
+        <omgdi:waypoint x="1840" y="315" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="2787" y="393" width="85" height="14" />
+          <omgdc:Bounds x="1725" y="294" width="90" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wksoq8_di" bpmnElement="Flow_0wksoq8">
-        <omgdi:waypoint x="2970" y="315" />
-        <omgdi:waypoint x="3060" y="315" />
+      <bpmndi:BPMNEdge id="Flow_0g62f3h_di" bpmnElement="Flow_0g62f3h">
+        <omgdi:waypoint x="1940" y="315" />
+        <omgdi:waypoint x="1980" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g41fqp_di" bpmnElement="Flow_1g41fqp">
+        <omgdi:waypoint x="2080" y="315" />
+        <omgdi:waypoint x="2120" y="315" />
+        <omgdi:waypoint x="2120" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xqragi_di" bpmnElement="Flow_1xqragi">
+        <omgdi:waypoint x="1735" y="551" />
+        <omgdi:waypoint x="2120" y="551" />
+        <omgdi:waypoint x="2120" y="455" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hvjknp_di" bpmnElement="Flow_1hvjknp">
+        <omgdi:waypoint x="2510" y="315" />
+        <omgdi:waypoint x="2560" y="315" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0is7f2h_di" bpmnElement="Flow_0is7f2h">
-        <omgdi:waypoint x="3160" y="315" />
-        <omgdi:waypoint x="3250" y="315" />
+        <omgdi:waypoint x="2660" y="315" />
+        <omgdi:waypoint x="2700" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vd0f2w_di" bpmnElement="Flow_0vd0f2w">
+        <omgdi:waypoint x="2320" y="405" />
+        <omgdi:waypoint x="2320" y="315" />
+        <omgdi:waypoint x="2410" y="315" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="2327" y="353" width="85" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wjytkg_di" bpmnElement="Flow_0wjytkg">
-        <omgdi:waypoint x="3350" y="315" />
-        <omgdi:waypoint x="3420" y="315" />
-        <omgdi:waypoint x="3420" y="406" />
+        <omgdi:waypoint x="2800" y="315" />
+        <omgdi:waypoint x="2820" y="315" />
+        <omgdi:waypoint x="2820" y="405" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0rmc5jp_di" bpmnElement="new_order">
-        <omgdc:Bounds x="162" y="296" width="36" height="36" />
+      <bpmndi:BPMNEdge id="Flow_1m4hwue_di" bpmnElement="Flow_1m4hwue">
+        <omgdi:waypoint x="2320" y="455" />
+        <omgdi:waypoint x="2320" y="551" />
+        <omgdi:waypoint x="2560" y="551" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="154" y="336" width="51" height="27" />
+          <omgdc:Bounds x="2332" y="534" width="68" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09b04cq_di" bpmnElement="Flow_09b04cq">
+        <omgdi:waypoint x="2660" y="551" />
+        <omgdi:waypoint x="2820" y="551" />
+        <omgdi:waypoint x="2820" y="455" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15esrt5_di" bpmnElement="Flow_15esrt5">
+        <omgdi:waypoint x="2270" y="430" />
+        <omgdi:waypoint x="2295" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_001udt1_di" bpmnElement="Flow_001udt1">
+        <omgdi:waypoint x="2145" y="430" />
+        <omgdi:waypoint x="2170" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9_di" bpmnElement="sid-B8059B1A-24D3-4D7A-8E69-70450912F6B9">
+        <omgdi:waypoint x="689" y="316" />
+        <omgdi:waypoint x="732" y="316" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x3r9mg_di" bpmnElement="Flow_0x3r9mg">
+        <omgdi:waypoint x="773" y="315" />
+        <omgdi:waypoint x="830" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3_di" bpmnElement="sid-E830AE78-53FE-4560-BD72-9BCCE15A74C3">
+        <omgdi:waypoint x="930" y="315" />
+        <omgdi:waypoint x="990" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA_di" bpmnElement="sid-17E698AB-C9C9-4D1A-B1CB-5082EE41E8CA">
+        <omgdi:waypoint x="749" y="299" />
+        <omgdi:waypoint x="749" y="126" />
+        <omgdi:waypoint x="830" y="126" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0_di" bpmnElement="sid-972DBAAC-B32F-4982-B650-FFE85AD657A0">
+        <omgdi:waypoint x="930" y="126" />
+        <omgdi:waypoint x="1010" y="126" />
+        <omgdi:waypoint x="1010" y="295" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1iavjiq_di" bpmnElement="Flow_1iavjiq">
+        <omgdi:waypoint x="204" y="317" />
+        <omgdi:waypoint x="256" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE_di" bpmnElement="sid-8FD16AF2-FEDE-4497-B8A9-0C383678F5EE">
+        <omgdi:waypoint x="356" y="315" />
+        <omgdi:waypoint x="407" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02_di" bpmnElement="sid-13DD052F-9C3C-4F59-AE01-28092D95AB02">
+        <omgdi:waypoint x="446" y="316" />
+        <omgdi:waypoint x="651" y="316" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="507" y="276" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13a7qan_di" bpmnElement="Flow_13a7qan">
+        <omgdi:waypoint x="670" y="478" />
+        <omgdi:waypoint x="670" y="335" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="677" y="398" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c7c09t_di" bpmnElement="Flow_0c7c09t">
+        <omgdi:waypoint x="427" y="335" />
+        <omgdi:waypoint x="427" y="503" />
+        <omgdi:waypoint x="486" y="503" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="432" y="398" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1flh2ym_di" bpmnElement="Flow_1flh2ym">
+        <omgdi:waypoint x="586" y="503" />
+        <omgdi:waypoint x="645" y="503" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="check-stock_di" bpmnElement="check-stock">
+        <omgdc:Bounds x="1240" y="275" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="control-medicine_di" bpmnElement="control-medicine">
-        <omgdc:Bounds x="260" y="274" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0_di" bpmnElement="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" isMarkerVisible="true">
+        <omgdc:Bounds x="1400" y="295" width="40" height="40" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679_di" bpmnElement="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679" isMarkerVisible="true">
-        <omgdc:Bounds x="724" y="293" width="40" height="40" />
+      <bpmndi:BPMNShape id="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1_di" bpmnElement="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" isMarkerVisible="true">
+        <omgdc:Bounds x="1074" y="295" width="40" height="40" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15_di" bpmnElement="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" isMarkerVisible="true">
-        <omgdc:Bounds x="421" y="293" width="40" height="40" />
+      <bpmndi:BPMNShape id="Event_1cwtkxd_di" bpmnElement="Event_1cwtkxd">
+        <omgdc:Bounds x="2882" y="412" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="prescription-validation_di" bpmnElement="prescription-validation">
-        <omgdc:Bounds x="500" y="461" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A_di" bpmnElement="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" isMarkerVisible="true">
+        <omgdc:Bounds x="1690" y="295" width="40" height="40" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1b8efe9_di" bpmnElement="Gateway_1b8efe9" isMarkerVisible="true">
-        <omgdc:Bounds x="719" y="476" width="50" height="50" />
+      <bpmndi:BPMNShape id="look-for-delivery_di" bpmnElement="look-for-delivery">
+        <omgdc:Bounds x="1840" y="275" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416_di" bpmnElement="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416">
-        <omgdc:Bounds x="838" y="293" width="40" height="40" />
+      <bpmndi:BPMNShape id="compute-time_di" bpmnElement="compute-time">
+        <omgdc:Bounds x="1980" y="275" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ji4xfg_di" bpmnElement="Gateway_0ji4xfg" isMarkerVisible="true">
+        <omgdc:Bounds x="1685" y="526" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rafph0_di" bpmnElement="confirmation-notification">
+        <omgdc:Bounds x="2560" y="275" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="assign-delivery_di" bpmnElement="assign-delivery">
+        <omgdc:Bounds x="2410" y="275" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="delivery-status_di" bpmnElement="delivery-status">
+        <omgdc:Bounds x="2700" y="275" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="report-notification_di" bpmnElement="denial-notification">
+        <omgdc:Bounds x="2560" y="511" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1rbij2l_di" bpmnElement="Gateway_1rbij2l" isMarkerVisible="true">
+        <omgdc:Bounds x="2795" y="405" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1jwvfek_di" bpmnElement="Gateway_1jwvfek" isMarkerVisible="true">
+        <omgdc:Bounds x="2295" y="405" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="report-creation_di" bpmnElement="report-creation">
+        <omgdc:Bounds x="2170" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0p34qej_di" bpmnElement="Gateway_0p34qej" isMarkerVisible="true">
+        <omgdc:Bounds x="2095" y="405" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="validate-payment_di" bpmnElement="validate-payment">
+        <omgdc:Bounds x="1522" y="275" width="116" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="check-address_di" bpmnElement="check-address">
-        <omgdc:Bounds x="940" y="273" width="100" height="80" />
+        <omgdc:Bounds x="830" y="275" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="validate-information_di" bpmnElement="validate-information">
-        <omgdc:Bounds x="940" y="84" width="100" height="80" />
+        <omgdc:Bounds x="830" y="86" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D_di" bpmnElement="sid-4C837D87-B63F-4EE9-8355-3162D5D3B69D">
-        <omgdc:Bounds x="1100" y="293" width="40" height="40" />
+        <omgdc:Bounds x="990" y="295" width="40" height="40" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1_di" bpmnElement="sid-22E8EC3B-9FEA-4A03-A686-6A9D2573A3C1" isMarkerVisible="true">
-        <omgdc:Bounds x="1220" y="295" width="40" height="40" />
+      <bpmndi:BPMNShape id="Gateway_0fwtzhs_di" bpmnElement="sid-C2755B9E-41AD-4E3C-9515-7681DB30A416">
+        <omgdc:Bounds x="728" y="295" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="check-stock_di" bpmnElement="check-stock">
-        <omgdc:Bounds x="1390" y="275" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_0rmc5jp_di" bpmnElement="new_order">
+        <omgdc:Bounds x="168" y="299" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="160" y="339" width="51" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0_di" bpmnElement="sid-31E0E844-160C-47E6-9C74-9AB1D886CDE0" isMarkerVisible="true">
-        <omgdc:Bounds x="1550" y="295" width="40" height="40" />
+      <bpmndi:BPMNShape id="control-medicine_di" bpmnElement="control-medicine">
+        <omgdc:Bounds x="256" y="277" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="validate-payment_di" bpmnElement="validate-payment">
-        <omgdc:Bounds x="1702" y="275" width="116" height="80" />
+      <bpmndi:BPMNShape id="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679_di" bpmnElement="sid-D95D474E-EB0B-4941-B87C-1D6AD6B3B679" isMarkerVisible="true">
+        <omgdc:Bounds x="650" y="295" width="40" height="40" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A_di" bpmnElement="sid-30631B10-FD53-4899-A8E7-AC1F35228F4A" isMarkerVisible="true">
-        <omgdc:Bounds x="1900" y="295" width="40" height="40" />
+      <bpmndi:BPMNShape id="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15_di" bpmnElement="sid-DE3166EE-67A5-47E2-B124-0D273E9A5E15" isMarkerVisible="true">
+        <omgdc:Bounds x="407" y="295" width="40" height="40" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0ji4xfg_di" bpmnElement="Gateway_0ji4xfg" isMarkerVisible="true">
-        <omgdc:Bounds x="1895" y="526" width="50" height="50" />
+      <bpmndi:BPMNShape id="prescription-validation_di" bpmnElement="prescription-validation">
+        <omgdc:Bounds x="486" y="463" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="look-for-delivery_di" bpmnElement="look-for-delivery">
-        <omgdc:Bounds x="2120" y="275" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="compute-time_di" bpmnElement="compute-time">
-        <omgdc:Bounds x="2300" y="275" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0p34qej_di" bpmnElement="Gateway_0p34qej" isMarkerVisible="true">
-        <omgdc:Bounds x="2455" y="425" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="report-creation_di" bpmnElement="report-creation">
-        <omgdc:Bounds x="2590" y="410" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1jwvfek_di" bpmnElement="Gateway_1jwvfek" isMarkerVisible="true">
-        <omgdc:Bounds x="2755" y="425" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="assign-delivery_di" bpmnElement="assign-delivery">
-        <omgdc:Bounds x="2870" y="275" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0rafph0_di" bpmnElement="confirmation-notification">
-        <omgdc:Bounds x="3060" y="275" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="delivery-status_di" bpmnElement="delivery-status">
-        <omgdc:Bounds x="3250" y="275" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="report-notification_di" bpmnElement="report-notification">
-        <omgdc:Bounds x="3060" y="511" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1rbij2l_di" bpmnElement="Gateway_1rbij2l" isMarkerVisible="true">
-        <omgdc:Bounds x="3395" y="406" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1cwtkxd_di" bpmnElement="Event_1cwtkxd">
-        <omgdc:Bounds x="3502" y="413" width="36" height="36" />
+      <bpmndi:BPMNShape id="Gateway_1b8efe9_di" bpmnElement="Gateway_1b8efe9" isMarkerVisible="true">
+        <omgdc:Bounds x="645" y="478" width="50" height="50" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="sid-1552479a-d2c2-4d9e-935b-c3878636395b">
