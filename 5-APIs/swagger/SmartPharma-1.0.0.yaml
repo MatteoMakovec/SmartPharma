@@ -1,0 +1,438 @@
+---
+swagger: "2.0"
+info:
+  description: Smart Pharma
+  version: 1.0.0
+  title: Smart Pharma
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Aida Gasanova; Matteo Makovec; Xiaoyu Luo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /XYLAW/SmartPharma/1.0.0
+tags:
+- name: order
+  description: Everything about your order
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: stock
+  description: Operations about stock
+- name: delivery
+  description: Operation about delivery
+- name: report
+  description: Operation about report
+- name: https://maps.googleapis.com/
+  description: Operations about get google maps info
+- name: https://www.salute.gov.it/
+  description: Operations about validate prescription
+- name: https://api-m.sandbox.paypal.com/
+  description: Operations about payment by paypal
+schemes:
+- https
+- http
+security:
+- smartPharm_auth: []
+paths:
+  /order:
+    post:
+      tags:
+      - order
+      summary: Create a new order
+      operationId: order
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: Create new Order object into system
+        required: true
+        schema:
+          $ref: '#/definitions/Order'
+      responses:
+        "201":
+          description: Created Success
+        "404":
+          description: invalid
+        "409":
+          description: resource already exists
+  /order/{order_id}:
+    get:
+      tags:
+      - order
+      summary: Get order information by ID
+      description: Returns order information, to check personal information
+      produces:
+      - application/json
+      parameters:
+      - name: order_id
+        in: path
+        description: update deliver man status
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful
+        "404":
+          description: ID not found
+  /maps/api:
+    get:
+      tags:
+      - https://maps.googleapis.com/
+      summary: get map information
+      operationId: getMapInformation
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: get map information
+        required: true
+        schema:
+          $ref: '#/definitions/ApiKey'
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Map'
+        "400":
+          description: Invalid Prescription
+  /validatePrescription:
+    post:
+      tags:
+      - https://www.salute.gov.it/
+      summary: validate prescription information
+      operationId: validatePrescription
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: validate the prescription
+        required: true
+        schema:
+          $ref: '#/definitions/Prescription'
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Prescription'
+        "400":
+          description: Invalid Prescription
+  /stock/inventory:
+    post:
+      tags:
+      - stock
+      summary: Check stock availability
+      description: Returns a availability status of quantities
+      operationId: getInventory
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: validate the medicine stock
+        required: true
+        schema:
+          $ref: '#/definitions/Medicine'
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: object
+  /report/{order_id}:
+    get:
+      tags:
+      - report
+      summary: report information
+      description: Returns a status of order
+      produces:
+      - application/json
+      parameters:
+      - name: order_id
+        in: path
+        description: ID of order to get information
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Report'
+  /delivery/deliverMan:
+    get:
+      tags:
+      - delivery
+      summary: Get available deliver man information
+      description: Returns a availability status of quantities
+      operationId: get available deliver man
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DeliveryMan'
+  /delivery/deliverMan/{deliver_man_id}:
+    post:
+      tags:
+      - delivery
+      summary: Update deliver man status
+      description: Update deliver man status
+      produces:
+      - application/json
+      parameters:
+      - name: deliver_man_id
+        in: path
+        description: update deliver man status
+        required: true
+        type: string
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DeliveryMan'
+        "400":
+          description: Invalid input
+  /delivery/time:
+    post:
+      tags:
+      - delivery
+      summary: Calculate delivery time
+      description: Returns a availability status of quantities
+      operationId: Calculate delivery time
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: get delivery time
+        required: true
+        schema:
+          $ref: '#/definitions/DeliveryMan'
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DeliveryTime'
+        "400":
+          description: Invalid input
+  /delivery/confirm/{order_id}:
+    post:
+      tags:
+      - delivery
+      summary: final delivery complete confirm
+      description: Delivery complete confirm by delivery man
+      produces:
+      - application/json
+      parameters:
+      - name: order_id
+        in: path
+        description: ID of order to get information
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Invalid input
+  /v2/payments/authorizations/{authorization_id}:
+    post:
+      tags:
+      - https://api-m.sandbox.paypal.com/
+      summary: payment operation
+      description: payment operation
+      parameters:
+      - in: body
+        name: body
+        description: post total money information
+        required: true
+        schema:
+          $ref: '#/definitions/PayPalRequest'
+      - name: authorization_id
+        in: path
+        description: ID of authorization_id to return
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PayPalResponse'
+        "400":
+          description: Invalid input
+securityDefinitions:
+  smartPharm_auth:
+    type: basic
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+definitions:
+  Order:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      surname:
+        type: string
+      gender:
+        type: string
+      birthDay:
+        type: string
+        format: date-time
+      taxCode:
+        type: string
+      medicineName:
+        type: string
+      prescription:
+        type: string
+        format: data-stream
+      quantity:
+        type: integer
+        format: int32
+      shipDate:
+        type: string
+        format: date-time
+      amount:
+        type: number
+        format: float
+      status:
+        type: string
+        description: Order Status
+        enum:
+        - placed
+        - approved
+        - delivered
+      complete:
+        type: boolean
+        default: false
+  Prescription:
+    type: object
+    properties:
+      prescription:
+        type: string
+      taxcode:
+        type: string
+  Medicine:
+    type: object
+    properties:
+      medicineName:
+        type: string
+      medicineId:
+        type: string
+      inventory:
+        type: integer
+        format: int64
+  Map:
+    type: object
+    properties:
+      lat:
+        type: number
+        format: float
+      lng:
+        type: number
+        format: float
+      zoom:
+        type: integer
+        format: int32
+      address:
+        type: string
+        format: int64
+  ApiKey:
+    type: object
+    properties:
+      key:
+        type: string
+  DeliveryMan:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      status:
+        type: string
+      lat:
+        type: string
+      lng:
+        type: string
+  DeliveryTimeCalculate:
+    type: object
+    properties:
+      idOfOrder:
+        type: integer
+        format: int32
+      idOfDeliverMan:
+        type: integer
+        format: int32
+      status:
+        type: string
+      latOfDeliverMan:
+        type: string
+      lngOfDeliverMan:
+        type: string
+      latOfTargetAdd:
+        type: string
+      lngOfTargetAdd:
+        type: string
+      address:
+        type: string
+  DeliveryTime:
+    type: object
+    properties:
+      code:
+        type: string
+        format: date-time
+  Report:
+    type: object
+    properties:
+      orderId:
+        type: integer
+        format: int64
+      reportType:
+        type: string
+      reportInfo:
+        type: string
+  PayPalRequest:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: float
+      currencyCode:
+        type: string
+  PayPalResponse:
+    type: object
+    properties:
+      invoiceId:
+        type: number
+        format: float
+      paymentStatus:
+        type: string
+      noteToPayer:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
