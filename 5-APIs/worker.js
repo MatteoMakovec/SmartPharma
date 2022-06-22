@@ -25,21 +25,14 @@ client.subscribe("control-medicine", async function ({ task, taskService }) {
 
   if (prescription) {
     process_vars.set("prescription_required", "true");
+    console.log(`PRESCRIPTION IS REQUIRED`);
   } else {
     process_vars.set("prescription_required", "false");
+    console.log(`PRESCRIPTION IS NOT REQUIRED`);
   }
 
-  console.log(`PRESCRIPTION CHECKED`);
   await taskService.complete(task, process_vars);
 });
-
-
-// Contact Ministry of Health
-client.subscribe("ministry-health", async function ({ task, taskService }) {
-  console.log(`PRESCRIPTION SENT TO MINISTRY OF HEALTH`);
-  await taskService.complete(task);
-});
-
 
 // Validate Prescription
 client.subscribe("prescription-validation", async function ({ task, taskService }) {
@@ -48,13 +41,14 @@ client.subscribe("prescription-validation", async function ({ task, taskService 
   
     if (prescription) {
       process_vars.set("prescription_valid", "true");
+      console.log(`PRESCRIPTION IS VALID`);
     } else {
       process_vars.set("prescription_valid", "false");
+      console.log(`PRESCRIPTION IS NOT VALID`);
     }
   
-    console.log(`PRESCRIPTION VALIDATED`);
     await taskService.complete(task, process_vars);
-  });
+});
 
 // Validate Information
 client.subscribe("validate-information", async function ({ task, taskService }) {
@@ -64,32 +58,28 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
   
     if (name && tax_code) {
       process_vars.set("personal_info_valid", "true");
+      console.log(`PERSONAL INFORMATION IS VALID`);
     } else {
       process_vars.set("personal_info_valid", "false");
+      console.log(`PERSONAL INFORMATION IS NOT VALID`);
     }
   
-    console.log(`PERSONAL INFORMATION CHECKED`);
     await taskService.complete(task, process_vars);
-  });
-
-// Contact Google Maps API
-client.subscribe("google-api", async function ({ task, taskService }) {
-    console.log(`PRESCRIPTION SENT TO MINISTRY OF HEALTH`);
-    await taskService.complete(task);
-  });
+});
 
 // Check Delivery address
-client.subscribe("check-address", async function ({ task, taskService }) {
+  client.subscribe("check-address", async function ({ task, taskService }) {
     const process_vars = new Variables();
     const address = task.variables.get("address");
 
     if (address) {
         process_vars.set("address_valid", "true");
+        console.log(`ADDRESS IS VALID`);
       } else {
         process_vars.set("address_valid", "false");
+        console.log(`ADDRESS IS NOT VALID`);
       }
 
-    console.log(`ADDRESS CHECKED`);
     await taskService.complete(task,process_vars);
   });
 
@@ -101,34 +91,14 @@ client.subscribe("check-address", async function ({ task, taskService }) {
     console.log(`STOCK CHECKED`);
     await taskService.complete(task,process_vars);
   });
-
-  // Payment Delegation
-  client.subscribe("payment-delegation", async function ({ task, taskService }) {
-    console.log(`PAYMENT REQUEST SENT TO THE THIRD PARTY SERVICE`);
-    await taskService.complete(task);
-  });
   
-  // Validate Payment
+// Validate Payment
   client.subscribe("validate-payment", async function ({ task, taskService }) {
     const process_vars = new Variables();
     process_vars.set("payment_confirmation", "true");
     
-    console.log(`PAYMENT VALIDATED`);
+    console.log(`PAYMENT IS VALID`);
     await taskService.complete(task, process_vars);
-  });
-
-  // Report Creation
-  client.subscribe("report-creation", async function ({ task, taskService }) {
-    
-    console.log(`REPORT CREATED`);
-    await taskService.complete(task);
-  });
-
-  // Report Notification
-  client.subscribe("report-notification", async function ({ task, taskService }) {
-    
-    console.log(`REPORT NOTIFIED`);
-    await taskService.complete(task);
   });
 
   // Looking for an available Delivery Man
@@ -138,21 +108,48 @@ client.subscribe("check-address", async function ({ task, taskService }) {
     await taskService.complete(task);
   });
 
-  // Retrieve Delivery Man Information
-  client.subscribe("delivery-information", async function ({ task, taskService }) {
-    console.log(`RETRIEVE CURRENT DELIVERY MAN INFORMATION`);
-    await taskService.complete(task);
-  });
-
   // Compute Delivery Time
   client.subscribe("compute-time", async function ({ task, taskService }) {
-    console.log(`COMPUTE DELIVERY TIME`);
+    const process_vars = new Variables();
+    const address = task.variables.get("address");
+    const delivery_time = "30 minutes";
+  
+    process_vars.set("delivery_time",delivery_time);
+    console.log("DELIVERY TIME IS " + delivery_time + " TO ADDRESS " + address);
+    await taskService.complete(task, process_vars);
+  });
+
+  // Report Creation
+  client.subscribe("report-creation", async function ({ task, taskService }) {
+    const process_vars = new Variables();
+    const payment_confirmation = task.variables.get("payment_confirmation");
+
+    if (payment_confirmation) {
+      process_vars.set("report", "true");
+    } else {
+      process_vars.set("report", "false");
+    }
+    
+    console.log(`REPORT CREATED`);
+    await taskService.complete(task,process_vars);
+  });
+
+  // Denial Notification
+  client.subscribe("denial-notification", async function ({ task, taskService }) {
+    console.log(`THE ORDER DENIED`);
     await taskService.complete(task);
   });
 
-  // Assign Delivery
-  client.subscribe("assign-delivery", async function ({ task, taskService }) {
+    // Assign Delivery
+    client.subscribe("assign-delivery", async function ({ task, taskService }) {
     
-    console.log(`DELIVERY MAN ASSIGNED`);
+      console.log(`DELIVERY MAN ASSIGNED`);
+      await taskService.complete(task);
+    });
+
+
+  // Confirmation Notification
+  client.subscribe("confirmation-notification", async function ({ task, taskService }) {
+    console.log(`THE ORDER CONFIRMED`);
     await taskService.complete(task);
   });
