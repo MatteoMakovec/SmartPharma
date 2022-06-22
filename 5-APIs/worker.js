@@ -3,7 +3,6 @@ const {
   logger,
   Variables,
 } = require("camunda-external-task-client-js");
-const open = require("open");
 
 // configuration for the Client:
 //  - 'baseUrl': url to the Process Engine
@@ -21,9 +20,9 @@ const client = new Client(config);
 // Control type of medicine
 client.subscribe("control-medicine", async function ({ task, taskService }) {
   const process_vars = new Variables();
-  const prescription = task.variables.get("prescription");
+  const medicine = task.variables.get("medicine");
 
-  if (prescription) {
+  if (medicine === "xanax") {
     process_vars.set("prescription_required", "true");
     console.log(`PRESCRIPTION IS REQUIRED`);
   } else {
@@ -79,16 +78,22 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
         process_vars.set("address_valid", "false");
         console.log(`ADDRESS IS NOT VALID`);
       }
-
     await taskService.complete(task,process_vars);
   });
 
   // Check Stock Availability
   client.subscribe("check-stock", async function ({ task, taskService }) {
     const process_vars = new Variables();
-    process_vars.set("stock_available", "true");
+    const medicine = task.variables.get("medicine");
 
-    console.log(`STOCK CHECKED`);
+    if (medicine === "magnesium") {
+      process_vars.set("stock_available", "false");
+      console.log(medicine + ` IS NOT AVAILABLE IN STOCK`);
+    } else {
+      process_vars.set("stock_available", "true");
+      console.log(medicine + ` IS AVAILABLE IN STOCK`);
+    }
+
     await taskService.complete(task,process_vars);
   });
   
@@ -102,7 +107,7 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
   });
 
   // Looking for an available Delivery Man
-  client.subscribe("looking-delivery", async function ({ task, taskService }) {
+  client.subscribe("look-for-delivery", async function ({ task, taskService }) {
     
     console.log(`DELIVERY MAN FOUND`);
     await taskService.complete(task);
@@ -116,7 +121,8 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
   
     process_vars.set("delivery_time",delivery_time);
     console.log("DELIVERY TIME IS " + delivery_time + " TO ADDRESS " + address);
-    await taskService.complete(task, process_vars);
+
+    await taskService.complete(task);
   });
 
   // Report Creation
@@ -134,22 +140,21 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
     await taskService.complete(task,process_vars);
   });
 
-  // Denial Notification
-  client.subscribe("denial-notification", async function ({ task, taskService }) {
-    console.log(`THE ORDER DENIED`);
-    await taskService.complete(task);
-  });
-
-    // Assign Delivery
-    client.subscribe("assign-delivery", async function ({ task, taskService }) {
-    
-      console.log(`DELIVERY MAN ASSIGNED`);
-      await taskService.complete(task);
-    });
+  // Assign Delivery
+client.subscribe("assign-delivery", async function ({ task, taskService }) {
+  console.log(`DELIVERY MAN ASSIGNED`);        
+  await taskService.complete(task);
+});
 
 
-  // Confirmation Notification
-  client.subscribe("confirmation-notification", async function ({ task, taskService }) {
-    console.log(`THE ORDER CONFIRMED`);
-    await taskService.complete(task);
-  });
+// Confirmation Notification
+client.subscribe("confirmation-notification", async function ({ task, taskService }) {
+  console.log(`THE ORDER CONFIRMED`);
+  await taskService.complete(task);
+});
+
+// Denial Notification
+client.subscribe("denial-notification", async function ({ task, taskService }) {
+  console.log(`THE ORDER DENIED`);
+  await taskService.complete(task);
+});
