@@ -1,6 +1,20 @@
 {
   "components": [
     {
+      "text": "### Medicine",
+      "type": "text",
+      "id": "Field_02x1mjj"
+    },
+    {
+      "label": "Medicine",
+      "type": "textfield",
+      "id": "Field_1exmx2h",
+      "key": "medicine",
+      "validate": {
+        "required": true
+      }
+    },
+    {
       "text": "### Prescription",
       "type": "text",
       "id": "Field_1meh9sr"
