@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 4,
   "components": [
     {
       "text": "### Medicine",
@@ -10,6 +11,24 @@
       "type": "textfield",
       "id": "Field_1exmx2h",
       "key": "medicine",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Quantity",
+      "type": "textfield",
+      "id": "Field_09tkeat",
+      "key": "quantity",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Price",
+      "type": "textfield",
+      "id": "Field_0f0jn7b",
+      "key": "price",
       "validate": {
         "required": true
       }
@@ -54,7 +73,6 @@
       "key": "tax-code"
     }
   ],
-  "schemaVersion": 4,
   "type": "default",
   "id": "order",
   "exporter": {
