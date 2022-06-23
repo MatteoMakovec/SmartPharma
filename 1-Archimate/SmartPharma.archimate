@@ -3,7 +3,7 @@
   <folder name="Strategy" id="id-ca0473035e3d411eaebe4c7cb053ce91" type="strategy"/>
   <folder name="Business" id="id-9dce21eff4cb4bcba8ba735800401d8c" type="business">
     <element xsi:type="archimate:BusinessActor" name="Customer" id="id-9757c3a1eeb9491aa33eb46b43dc890e"/>
-    <element xsi:type="archimate:BusinessService" name="Medicine Providing Service" id="id-6424b7040ea845d5a4d8b5bf3291fe9e"/>
+    <element xsi:type="archimate:BusinessService" name="SmartPharma Service" id="id-6424b7040ea845d5a4d8b5bf3291fe9e"/>
     <element xsi:type="archimate:BusinessProcess" name="Order Process" id="id-70bd707290a04159bc8ddd9402ce78cf"/>
     <element xsi:type="archimate:BusinessInterface" name="Web App Medicine Proving Interface" id="id-7a85510f94734d3baa8d69ea819d94ef"/>
     <element xsi:type="archimate:BusinessInterface" name="Mobile App Medicine Proving interface " id="id-a390dc047a3749778b2e680f4ecfa6d3"/>
@@ -252,10 +252,10 @@
   <folder name="Views" id="id-58fa840e1cba435089bf7d43c7b9a86e" type="diagrams">
     <element xsi:type="archimate:ArchimateDiagramModel" name="Business Layer View" id="id-9edb5af3fdcc4bcd942eaa8aef7f7ed0">
       <child xsi:type="archimate:DiagramObject" id="id-0f79b31a6f0043978947c0b0f7832133" targetConnections="id-a99f5331716b44a6965f9c92612c9d97" archimateElement="id-9757c3a1eeb9491aa33eb46b43dc890e">
-        <bounds x="1236" y="132" width="120" height="55"/>
+        <bounds x="1236" y="132" width="133" height="55"/>
       </child>
       <child xsi:type="archimate:DiagramObject" id="id-f5573067a1444eb19432f670bc7cde49" targetConnections="id-7ad0656b4f8d4b2c9fb3dabece59c54b id-36fbfed549ac427a98ce24aea407a165" archimateElement="id-6424b7040ea845d5a4d8b5bf3291fe9e">
-        <bounds x="1236" y="237" width="120" height="55"/>
+        <bounds x="1236" y="237" width="133" height="55"/>
         <sourceConnection xsi:type="archimate:Connection" id="id-a99f5331716b44a6965f9c92612c9d97" source="id-f5573067a1444eb19432f670bc7cde49" target="id-0f79b31a6f0043978947c0b0f7832133" archimateRelationship="id-996244cb3c254fe88d93e3ec62400ca6"/>
       </child>
       <child xsi:type="archimate:DiagramObject" id="id-73f6bbbcedfb49ca879762a49bdd151e" targetConnections="id-239fa02ea13b41f4b4d55b2a3cd67f90" archimateElement="id-70bd707290a04159bc8ddd9402ce78cf">
