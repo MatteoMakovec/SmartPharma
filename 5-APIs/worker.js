@@ -85,13 +85,14 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
   client.subscribe("check-stock", async function ({ task, taskService }) {
     const process_vars = new Variables();
     const medicine = task.variables.get("medicine");
+    const quantity = task.variables.get("quantity");
 
-    if (medicine === "magnesium") {
-      process_vars.set("stock_available", "false");
-      console.log(medicine + ` IS NOT AVAILABLE IN STOCK`);
-    } else {
+    if (Number(quantity) < 4) {
       process_vars.set("stock_available", "true");
       console.log(medicine + ` IS AVAILABLE IN STOCK`);
+    } else {
+      process_vars.set("stock_available", "false");
+      console.log(medicine + ` IS NOT AVAILABLE IN STOCK`);
     }
 
     await taskService.complete(task,process_vars);
@@ -100,9 +101,16 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
 // Validate Payment
   client.subscribe("validate-payment", async function ({ task, taskService }) {
     const process_vars = new Variables();
-    process_vars.set("payment_confirmation", "true");
-    
-    console.log(`PAYMENT IS VALID`);
+    const price = task.variables.get("price");
+
+    if (Number(price) > 0) {
+      process_vars.set("payment_confirmation", "true");
+      console.log(`PAYMENT IS VALID`);
+    } else {
+      process_vars.set("payment_confirmation", "false");
+      console.log(`PAYMENT IS NOT VALID`);
+    }
+
     await taskService.complete(task, process_vars);
   });
 
@@ -130,7 +138,7 @@ client.subscribe("validate-information", async function ({ task, taskService }) 
     const process_vars = new Variables();
     const payment_confirmation = task.variables.get("payment_confirmation");
 
-    if (payment_confirmation) {
+    if (payment_confirmation === "true") {
       process_vars.set("report", "true");
     } else {
       process_vars.set("report", "false");
